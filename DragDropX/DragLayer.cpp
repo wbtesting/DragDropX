@@ -2,7 +2,7 @@
 //  DragLayer.cpp
 //  DragDropX
 //
-//  Created by Shawn on 17/6/13.
+//  Created by wxf on 17/6/13.
 //
 //
 

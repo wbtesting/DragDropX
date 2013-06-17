@@ -2,7 +2,7 @@
 //  CCDragableItem.cpp
 //  DragDropX
 //
-//  Created by Shawn on 13/6/13.
+//  Created by wxf on 13/6/13.
 //
 //
 
