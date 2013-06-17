@@ -129,13 +129,15 @@ bool CCDragableLayer::initWithArray(CCArray* pArrayOfItems)
             }
         }
         
-        //    [self alignItemsVertically];
+
         m_pSelectedItem = NULL;
         m_eState = kCCDragableLayerStateWaiting;
         
+        /*
         // enable cascade color and opacity on menus
         setCascadeColorEnabled(true);
         setCascadeOpacityEnabled(true);
+        */
         
         return true;
     }

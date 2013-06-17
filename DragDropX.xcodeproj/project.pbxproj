@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		293CC5CD176EC2760079DDA9 /* DragLayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 293CC5CB176EC2760079DDA9 /* DragLayer.cpp */; };
+		293CC5D2176EE8CB0079DDA9 /* bird.png in Resources */ = {isa = PBXBuildFile; fileRef = 293CC5CE176EE8CB0079DDA9 /* bird.png */; };
+		293CC5D3176EE8CB0079DDA9 /* cat.png in Resources */ = {isa = PBXBuildFile; fileRef = 293CC5CF176EE8CB0079DDA9 /* cat.png */; };
+		293CC5D4176EE8CB0079DDA9 /* dog.png in Resources */ = {isa = PBXBuildFile; fileRef = 293CC5D0176EE8CB0079DDA9 /* dog.png */; };
+		293CC5D5176EE8CB0079DDA9 /* turtle.png in Resources */ = {isa = PBXBuildFile; fileRef = 293CC5D1176EE8CB0079DDA9 /* turtle.png */; };
 		29C8EE2F176EAB97005CCF4F /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29C8EE2E176EAB97005CCF4F /* QuartzCore.framework */; };
 		29C8EE31176EAB97005CCF4F /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29C8EE30176EAB97005CCF4F /* OpenGLES.framework */; };
 		29C8EE33176EAB97005CCF4F /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29C8EE32176EAB97005CCF4F /* OpenAL.framework */; };
@@ -271,6 +276,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		293CC5CB176EC2760079DDA9 /* DragLayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DragLayer.cpp; sourceTree = "<group>"; };
+		293CC5CC176EC2760079DDA9 /* DragLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DragLayer.h; sourceTree = "<group>"; };
+		293CC5CE176EE8CB0079DDA9 /* bird.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bird.png; sourceTree = "<group>"; };
+		293CC5CF176EE8CB0079DDA9 /* cat.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cat.png; sourceTree = "<group>"; };
+		293CC5D0176EE8CB0079DDA9 /* dog.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dog.png; sourceTree = "<group>"; };
+		293CC5D1176EE8CB0079DDA9 /* turtle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = turtle.png; sourceTree = "<group>"; };
 		29C8EE2B176EAB97005CCF4F /* DragDropX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DragDropX.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		29C8EE2E176EAB97005CCF4F /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		29C8EE30176EAB97005CCF4F /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -908,6 +919,10 @@
 		29C8EE3F176EAB97005CCF4F /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				293CC5CE176EE8CB0079DDA9 /* bird.png */,
+				293CC5CF176EE8CB0079DDA9 /* cat.png */,
+				293CC5D0176EE8CB0079DDA9 /* dog.png */,
+				293CC5D1176EE8CB0079DDA9 /* turtle.png */,
 				29C8EE40176EAB97005CCF4F /* CloseNormal.png */,
 				29C8EE42176EAB97005CCF4F /* CloseSelected.png */,
 				29C8EE44176EAB97005CCF4F /* Default.png */,
@@ -1990,6 +2005,8 @@
 				29C8F1A2176EAB9C005CCF4F /* AppDelegate.cpp */,
 				29C8F1A4176EAB9C005CCF4F /* HelloWorldScene.h */,
 				29C8F1A5176EAB9C005CCF4F /* HelloWorldScene.cpp */,
+				293CC5CC176EC2760079DDA9 /* DragLayer.h */,
+				293CC5CB176EC2760079DDA9 /* DragLayer.cpp */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -2057,6 +2074,10 @@
 				29C8EE55176EAB97005CCF4F /* iTunesArtwork in Resources */,
 				29C8EEF1176EAB98005CCF4F /* ChangeLog in Resources */,
 				29C8F05B176EAB9A005CCF4F /* project.pbxproj in Resources */,
+				293CC5D2176EE8CB0079DDA9 /* bird.png in Resources */,
+				293CC5D3176EE8CB0079DDA9 /* cat.png in Resources */,
+				293CC5D4176EE8CB0079DDA9 /* dog.png in Resources */,
+				293CC5D5176EE8CB0079DDA9 /* turtle.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2305,6 +2326,7 @@
 				29C8F1A6176EAB9C005CCF4F /* HelloWorldScene.cpp in Sources */,
 				29C8F1AE176EAC7E005CCF4F /* CCDragableLayer.cpp in Sources */,
 				29C8F1B1176EACE9005CCF4F /* CCDragableItem.cpp in Sources */,
+				293CC5CD176EC2760079DDA9 /* DragLayer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2442,6 +2464,7 @@
 				29C8F1AB176EAB9C005CCF4F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

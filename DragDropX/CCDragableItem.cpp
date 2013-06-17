@@ -8,12 +8,13 @@
 
 #include "CCDragableItem.h"
 #include "support/CCPointExtension.h"
+#include "CCSprite.h"
 
 NS_CC_BEGIN
 
-static unsigned int _globalFontSize = kCCItemSize;
+//static unsigned int _globalFontSize = kCCItemSize;
 static std::string _globalFontName = "Marker Felt";
-static bool _globalFontNameRelease = false;
+//static bool _globalFontNameRelease = false;
 
 const unsigned int    kCurrentItem = 0xc0c05001;
 const unsigned int    kZoomActionTag = 0xc0c05002;
@@ -25,81 +26,183 @@ const unsigned int    kDisableTag = 0x3;
 // CCDragableItem
 //
 
-CCDragableItem* CCDragableItem::create()
+
+
+CCNode * CCDragableItem::getNormalImage()
 {
-    return CCDragableItem::create(NULL, NULL);
+    return m_pNormalImage;
 }
 
-CCDragableItem* CCDragableItem::create(CCObject *rec, SEL_MenuHandler selector)
+void CCDragableItem::setNormalImage(CCNode* pImage)
+{
+    if (pImage != m_pNormalImage)
+    {
+        if (pImage)
+        {
+            addChild(pImage, 0, kNormalTag);
+            pImage->setAnchorPoint(ccp(0, 0));
+        }
+        
+        if (m_pNormalImage)
+        {
+            removeChild(m_pNormalImage, true);
+        }
+        
+        m_pNormalImage = pImage;
+        this->setContentSize(m_pNormalImage->getContentSize());
+        this->updateImagesVisibility();
+    }
+}
+
+CCNode * CCDragableItem::getSelectedImage()
+{
+    return m_pSelectedImage;
+}
+
+void CCDragableItem::setSelectedImage(CCNode* pImage)
+{
+    if (pImage != m_pNormalImage)
+    {
+        if (pImage)
+        {
+            addChild(pImage, 0, kSelectedTag);
+            pImage->setAnchorPoint(ccp(0, 0));
+        }
+        
+        if (m_pSelectedImage)
+        {
+            removeChild(m_pSelectedImage, true);
+        }
+        
+        m_pSelectedImage = pImage;
+        this->updateImagesVisibility();
+    }
+}
+
+CCNode * CCDragableItem::getDisabledImage()
+{
+    return m_pDisabledImage;
+}
+
+void CCDragableItem::setDisabledImage(CCNode* pImage)
+{
+    if (pImage != m_pNormalImage)
+    {
+        if (pImage)
+        {
+            addChild(pImage, 0, kDisableTag);
+            pImage->setAnchorPoint(ccp(0, 0));
+        }
+        
+        if (m_pDisabledImage)
+        {
+            removeChild(m_pDisabledImage, true);
+        }
+        
+        m_pDisabledImage = pImage;
+        this->updateImagesVisibility();
+    }
+}
+
+
+
+//
+//CCDragableItem
+//
+
+CCDragableItem * CCDragableItem::create(CCNode* normalSprite)
+{
+    return CCDragableItem::create(normalSprite, normalSprite, normalSprite, NULL, NULL);
+}
+
+CCDragableItem * CCDragableItem::create(CCNode* normalSprite, CCNode* selectedSprite, CCNode* disabledSprite)
+{
+    return CCDragableItem::create(normalSprite, selectedSprite, disabledSprite, NULL, NULL);
+}
+
+CCDragableItem * CCDragableItem::create(CCNode* normalSprite, CCNode* selectedSprite, CCObject* target, SEL_MenuHandler selector)
+{
+    return CCDragableItem::create(normalSprite, selectedSprite, NULL, target, selector);
+}
+
+CCDragableItem * CCDragableItem::create(CCNode *normalSprite, CCNode *selectedSprite, CCNode *disabledSprite, CCObject *target, SEL_MenuHandler selector)
 {
     CCDragableItem *pRet = new CCDragableItem();
-    pRet->initWithTarget(rec, selector);
+    pRet->initWithNormalSprite(normalSprite, selectedSprite, disabledSprite, target, selector);
     pRet->autorelease();
     return pRet;
 }
 
-bool CCDragableItem::initWithTarget(CCObject *rec, SEL_MenuHandler selector)
+bool CCDragableItem::initWithNormalSprite(CCNode* normalSprite, CCNode* selectedSprite, CCNode* disabledSprite, CCObject* target, SEL_MenuHandler selector)
 {
-    setAnchorPoint(ccp(0.5f, 0.5f));
-    m_pListener = rec;
-    m_pfnSelector = selector;
-    m_bEnabled = true;
-    m_bSelected = false;
+
+    setNormalImage(normalSprite);
+    setSelectedImage(selectedSprite);
+    setDisabledImage(disabledSprite);
+    
+    if(m_pNormalImage)
+    {
+        this->setContentSize(m_pNormalImage->getContentSize());
+    }
+    
+
     return true;
 }
 
-CCDragableItem::~CCDragableItem()
-{
-    unregisterScriptTapHandler();
-}
-
+/**
+ @since v0.99.5
+ */
 void CCDragableItem::selected()
 {
-    m_bSelected = true;
+
+    
+    if (m_pNormalImage)
+    {
+        if (m_pDisabledImage)
+        {
+            m_pDisabledImage->setVisible(false);
+        }
+        
+        if (m_pSelectedImage)
+        {
+            m_pNormalImage->setVisible(false);
+            m_pSelectedImage->setVisible(true);
+        }
+        else
+        {
+            m_pNormalImage->setVisible(true);
+        }
+    }
 }
 
 void CCDragableItem::unselected()
 {
-    m_bSelected = false;
-}
 
-void CCDragableItem::registerScriptTapHandler(int nHandler)
-{
-    unregisterScriptTapHandler();
-    m_nScriptTapHandler = nHandler;
-    LUALOG("[LUA] Add CCDragableItem script handler: %d", m_nScriptTapHandler);
-}
-
-void CCDragableItem::unregisterScriptTapHandler(void)
-{
-    if (m_nScriptTapHandler)
+    if (m_pNormalImage)
     {
-        CCScriptEngineManager::sharedManager()->getScriptEngine()->removeScriptHandler(m_nScriptTapHandler);
-        LUALOG("[LUA] Remove CCDragableItem script handler: %d", m_nScriptTapHandler);
-        m_nScriptTapHandler = 0;
-    }
-}
-/*
-void CCDragableItem::activate()
-{
-    if (m_bEnabled)
-    {
-        if (m_pListener && m_pfnSelector)
+        m_pNormalImage->setVisible(true);
+        
+        if (m_pSelectedImage)
         {
-            (m_pListener->*m_pfnSelector)(this);
+            m_pSelectedImage->setVisible(false);
         }
         
-        if (kScriptTypeNone != m_eScriptType)
+        if (m_pDisabledImage)
         {
-            CCScriptEngineManager::sharedManager()->getScriptEngine()->executeMenuItemEvent(this);
+            m_pDisabledImage->setVisible(false);
         }
     }
 }
-*/
-void CCDragableItem::setEnabled(bool enabled)
+
+void CCDragableItem::setEnabled(bool bEnabled)
 {
-    m_bEnabled = enabled;
+    if( m_bEnabled != bEnabled )
+    {
+        this->updateImagesVisibility();
+    }
 }
+
+
 
 bool CCDragableItem::isEnabled()
 {
@@ -118,11 +221,32 @@ bool CCDragableItem::isSelected()
     return m_bSelected;
 }
 
-void CCDragableItem::setTarget(CCObject *rec, SEL_MenuHandler selector)
+// Helper
+void CCDragableItem::updateImagesVisibility()
 {
-    m_pListener = rec;
-    m_pfnSelector = selector;
+    if (m_bEnabled)
+    {
+        if (m_pNormalImage)   m_pNormalImage->setVisible(true);
+        if (m_pSelectedImage) m_pSelectedImage->setVisible(false);
+        if (m_pDisabledImage) m_pDisabledImage->setVisible(false);
+    }
+    else
+    {
+        if (m_pDisabledImage)
+        {
+            if (m_pNormalImage)   m_pNormalImage->setVisible(false);
+            if (m_pSelectedImage) m_pSelectedImage->setVisible(false);
+            if (m_pDisabledImage) m_pDisabledImage->setVisible(true);
+        }
+        else
+        {
+            if (m_pNormalImage)   m_pNormalImage->setVisible(true);
+            if (m_pSelectedImage) m_pSelectedImage->setVisible(false);
+            if (m_pDisabledImage) m_pDisabledImage->setVisible(false);
+        }
+    }
 }
+
 
 
 NS_CC_END
