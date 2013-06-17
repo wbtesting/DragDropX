@@ -8,6 +8,9 @@
 
 #include "CCDragableLayer.h"
 #include "CCDirector.h"
+#include "touch_dispatcher/CCTouchDispatcher.h"
+#include "touch_dispatcher/CCTouch.h"
+
 #include "support/CCPointExtension.h"
 
 #include "cocoa/CCInteger.h"
@@ -111,7 +114,7 @@ bool CCDragableLayer::initWithArray(CCArray* pArrayOfItems)
         // menu in the center of the screen
         CCSize s = CCDirector::sharedDirector()->getWinSize();
         
-        this->ignoreAnchorPointForPosition(true);
+        this->ignoreAnchorPointForPosition(false);
         setAnchorPoint(ccp(0.5f, 0.5f));
         this->setContentSize(s);
         
@@ -207,12 +210,13 @@ void CCDragableLayer::setHandlerPriority(int newPriority)
 void CCDragableLayer::registerWithTouchDispatcher()
 {
     CCDirector* pDirector = CCDirector::sharedDirector();
-    //pDirector->getTouchDispatcher()->addTargetedDelegate(this, this->getTouchPriority(), true);
+    pDirector->getTouchDispatcher()->addTargetedDelegate(this, this->getTouchPriority(), true);
 }
 
 bool CCDragableLayer::ccTouchBegan(CCTouch* touch, CCEvent* event)
 {
     CC_UNUSED_PARAM(event);
+    CCLOG("touch began");
     if (m_eState != kCCDragableLayerStateWaiting || ! m_bVisible || !m_bEnabled)
     {
         return false;
@@ -229,8 +233,9 @@ bool CCDragableLayer::ccTouchBegan(CCTouch* touch, CCEvent* event)
     m_pSelectedItem = this->itemForTouch(touch);
     if (m_pSelectedItem)
     {
+        CCLOG("selected item %p", m_pSelectedItem);
         m_eState = kCCDragableLayerStateTrackingTouch;
-        m_pSelectedItem->selected();
+        //m_pSelectedItem->selected();
         return true;
     }
     return false;
@@ -265,7 +270,9 @@ void CCDragableLayer::ccTouchMoved(CCTouch* touch, CCEvent* event)
 {
     CC_UNUSED_PARAM(event);
     CCAssert(m_eState == kCCDragableLayerStateTrackingTouch, "[Menu ccTouchMoved] -- invalid state");
+        /*
     CCDragableItem *currentItem = this->itemForTouch(touch);
+
     if (currentItem != m_pSelectedItem)
     {
         if (m_pSelectedItem)
@@ -277,7 +284,8 @@ void CCDragableLayer::ccTouchMoved(CCTouch* touch, CCEvent* event)
         {
             m_pSelectedItem->selected();
         }
-    }
+    }*/
+    m_pSelectedItem->setPosition(this->convertTouchToNodeSpace(touch));
 }
 
 
@@ -292,7 +300,8 @@ CCDragableItem* CCDragableLayer::itemForTouch(CCTouch *touch)
         CCARRAY_FOREACH(m_pChildren, pObject)
         {
             CCDragableItem* pChild = dynamic_cast<CCDragableItem*>(pObject);
-            if (pChild && pChild->isVisible() && pChild->isEnabled())
+            //if (pChild && pChild->isVisible() && pChild->isEnabled())
+            if (pChild && pChild->isVisible())
             {
                 CCPoint local = pChild->convertToNodeSpace(touchLocation);
                 CCRect r = pChild->rect();
