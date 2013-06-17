@@ -266,6 +266,8 @@
 		29C8F19C176EAB9C005CCF4F /* cpVect.c in Sources */ = {isa = PBXBuildFile; fileRef = 29C8F19B176EAB9C005CCF4F /* cpVect.c */; };
 		29C8F1A3176EAB9C005CCF4F /* AppDelegate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 29C8F1A2176EAB9C005CCF4F /* AppDelegate.cpp */; };
 		29C8F1A6176EAB9C005CCF4F /* HelloWorldScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 29C8F1A5176EAB9C005CCF4F /* HelloWorldScene.cpp */; };
+		29C8F1AE176EAC7E005CCF4F /* CCDragableLayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 29C8F1AC176EAC7E005CCF4F /* CCDragableLayer.cpp */; };
+		29C8F1B1176EACE9005CCF4F /* CCDragableItem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 29C8F1AF176EACE9005CCF4F /* CCDragableItem.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -832,6 +834,10 @@
 		29C8F1A2176EAB9C005CCF4F /* AppDelegate.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = AppDelegate.cpp; path = Classes/AppDelegate.cpp; sourceTree = "<group>"; };
 		29C8F1A4176EAB9C005CCF4F /* HelloWorldScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = HelloWorldScene.h; path = Classes/HelloWorldScene.h; sourceTree = "<group>"; };
 		29C8F1A5176EAB9C005CCF4F /* HelloWorldScene.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = HelloWorldScene.cpp; path = Classes/HelloWorldScene.cpp; sourceTree = "<group>"; };
+		29C8F1AC176EAC7E005CCF4F /* CCDragableLayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CCDragableLayer.cpp; path = libs/cocos2dx/menu_nodes/CCDragableLayer.cpp; sourceTree = "<group>"; };
+		29C8F1AD176EAC7E005CCF4F /* CCDragableLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CCDragableLayer.h; path = libs/cocos2dx/menu_nodes/CCDragableLayer.h; sourceTree = "<group>"; };
+		29C8F1AF176EACE9005CCF4F /* CCDragableItem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCDragableItem.cpp; sourceTree = "<group>"; };
+		29C8F1B0176EACE9005CCF4F /* CCDragableItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCDragableItem.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1212,10 +1218,14 @@
 		29C8EF2D176EAB99005CCF4F /* menu_nodes */ = {
 			isa = PBXGroup;
 			children = (
-				29C8EF2E176EAB99005CCF4F /* CCMenu.cpp */,
+				29C8F1AD176EAC7E005CCF4F /* CCDragableLayer.h */,
+				29C8F1AC176EAC7E005CCF4F /* CCDragableLayer.cpp */,
+				29C8F1B0176EACE9005CCF4F /* CCDragableItem.h */,
+				29C8F1AF176EACE9005CCF4F /* CCDragableItem.cpp */,
 				29C8EF30176EAB99005CCF4F /* CCMenu.h */,
-				29C8EF31176EAB99005CCF4F /* CCMenuItem.cpp */,
+				29C8EF2E176EAB99005CCF4F /* CCMenu.cpp */,
 				29C8EF33176EAB99005CCF4F /* CCMenuItem.h */,
+				29C8EF31176EAB99005CCF4F /* CCMenuItem.cpp */,
 			);
 			name = menu_nodes;
 			sourceTree = "<group>";
@@ -2293,6 +2303,8 @@
 				29C8F19C176EAB9C005CCF4F /* cpVect.c in Sources */,
 				29C8F1A3176EAB9C005CCF4F /* AppDelegate.cpp in Sources */,
 				29C8F1A6176EAB9C005CCF4F /* HelloWorldScene.cpp in Sources */,
+				29C8F1AE176EAC7E005CCF4F /* CCDragableLayer.cpp in Sources */,
+				29C8F1B1176EACE9005CCF4F /* CCDragableItem.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
