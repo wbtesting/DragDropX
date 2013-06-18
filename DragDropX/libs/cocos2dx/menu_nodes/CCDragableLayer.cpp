@@ -204,7 +204,7 @@ void CCDragableLayer::removeChild(CCNode* child, bool cleanup)
 void CCDragableLayer::setHandlerPriority(int newPriority)
 {
     CCTouchDispatcher* pDispatcher = CCDirector::sharedDirector()->getTouchDispatcher();
-    //pDispatcher->setPriority(newPriority, this);
+    pDispatcher->setPriority(newPriority, this);
 }
 
 void CCDragableLayer::registerWithTouchDispatcher()
