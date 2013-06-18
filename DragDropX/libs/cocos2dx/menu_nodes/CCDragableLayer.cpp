@@ -127,6 +127,7 @@ bool CCDragableLayer::initWithArray(CCArray* pArrayOfItems)
             CCARRAY_FOREACH(pArrayOfItems, pObj)
             {
                 CCDragableItem* item = (CCDragableItem*)pObj;
+                item->setAnchorPoint(ccp(0.5f,0.5f));
                 this->addChild(item, z);
                 z++;
             }

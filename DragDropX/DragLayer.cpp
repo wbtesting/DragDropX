@@ -48,7 +48,7 @@ bool DragDrop::init()
     // create and initialize a label
     // ask director the window size
     CCSize winSize = CCDirector::sharedDirector()->getWinSize();
-    CCArray *images = CCArray::create(CCString::create("bird.png"), CCString::create("cat.png"), CCString::create("dog.png"), CCString::create("turtle.png"), NULL); //[NSArray arrayWithObjects:];
+    CCArray *images = CCArray::create(CCString::create("bird.png"), CCString::create("cat.png"), CCString::create("dog.png"), CCString::create("turtle.png"), NULL);
     CCArray *movableItems = new CCArray();
     for (int i = 0; i < images->count(); i++) {
         CCString *imageName = (CCString *)images->objectAtIndex(i);
