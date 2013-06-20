@@ -9,15 +9,14 @@
 #ifndef __DragDropX__CCDragableItem__
 #define __DragDropX__CCDragableItem__
 
-
 #include "base_nodes/CCNode.h"
 #include "CCProtocols.h"
 #include "cocoa/CCArray.h"
+#include "touch_dispatcher/CCTouchDelegateProtocol.h"
 
 NS_CC_BEGIN
 
-class CCSprite;
-class CCSpriteFrame;
+
 #define kCCItemSize 32
 
 /**
@@ -27,11 +26,23 @@ class CCSpriteFrame;
  * @{
  */
 
+typedef enum  {
+	kCCDragableLayerStateWaiting,
+	kCCDragableLayerStateTrackingTouch
+} tCCDragableLayerState;
+
+enum {
+	//* priority used by the menu for the event handler
+    //* use the same value as CCDragableLaye
+	kCCDragableLayerHandlerPriority = -128,
+};
+
+
 /** @brief CCDragableItem base class
  *
  *  Modify from CCMenuItemSprite
  */
-class CC_DLL CCDragableItem : public CCNode
+class CC_DLL CCDragableItem : public CCNode,public CCTouchDelegate
 {
     /** the image used when the item is not selected */
     CC_PROPERTY(CCNode*, m_pNormalImage, NormalImage);
@@ -41,46 +52,48 @@ class CC_DLL CCDragableItem : public CCNode
     CC_PROPERTY(CCNode*, m_pDisabledImage, DisabledImage);
 public:
     CCDragableItem()
-    :m_bEnabled(false)
+    :m_bEnabled(true)
+    ,m_bDragable(true)
     ,m_pNormalImage(NULL)
     ,m_pSelectedImage(NULL)
     ,m_pDisabledImage(NULL)
     {}
     
     static CCDragableItem * create(CCNode* normalSprite);
-    /** creates a menu item with a normal, selected and disabled image*/
-    static CCDragableItem * create(CCNode* normalSprite, CCNode* selectedSprite, CCNode* disabledSprite = NULL);
-    /** creates a menu item with a normal and selected image with target/selector */
-    static CCDragableItem * create(CCNode* normalSprite, CCNode* selectedSprite, CCObject* target, SEL_MenuHandler selector);
-    /** creates a menu item with a normal,selected  and disabled image with target/selector */
-    static CCDragableItem * create(CCNode* normalSprite, CCNode* selectedSprite, CCNode* disabledSprite, CCObject* target, SEL_MenuHandler selector);
-    
-    /** initializes a menu item with a normal, selected  and disabled image with target/selector */
-    bool initWithNormalSprite(CCNode* normalSprite, CCNode* selectedSprite, CCNode* disabledSprite, CCObject* target, SEL_MenuHandler selector);
+    bool initWithNormalSprite(CCNode* normalSprite, CCNode* selectedSprite, CCNode* disabledSprite, bool dragable);
     
     /** Returns the outside box */
     CCRect rect();
-    /** Activate the item */
-    //virtual void activate();
-    /** The item was selected (not activated), similar to "mouse-over" */
-    virtual void selected();
-    /** The item was unselected */
-    virtual void unselected();
-    
-        
+
     virtual bool isEnabled();
     //@note: It's 'setIsEnable' in cocos2d-iphone.
     virtual void setEnabled(bool value);
-    virtual bool isSelected();
- 
-    
+
 protected:
     virtual void updateImagesVisibility();
+    
+    //touch event
 
+    
+    void setHandlerPriority(int newPriority);
+    virtual void registerWithTouchDispatcher();
+    
+    /**
+     @brief For phone event handle functions
+     */
+    virtual bool ccTouchBegan(CCTouch* touch, CCEvent* event);
+    virtual void ccTouchEnded(CCTouch* touch, CCEvent* event);
+    virtual void ccTouchCancelled(CCTouch *touch, CCEvent* event);
+    virtual void ccTouchMoved(CCTouch* touch, CCEvent* event);
+    
+    
     /** whether or not the item is selected  @since v0.8.2
      */
-    bool m_bSelected;
+    bool isTouchInside(CCTouch *touch);
+    
+    bool m_bDragable;
     bool m_bEnabled;
+    tCCDragableLayerState m_eState;
 
 };
 NS_CC_END

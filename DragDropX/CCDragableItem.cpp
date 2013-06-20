@@ -7,8 +7,14 @@
 //
 
 #include "CCDragableItem.h"
+
+#include "CCDirector.h"
+#include "touch_dispatcher/CCTouchDispatcher.h"
+
+
 #include "support/CCPointExtension.h"
-#include "CCSprite.h"
+
+
 
 NS_CC_BEGIN
 
@@ -112,87 +118,30 @@ void CCDragableItem::setDisabledImage(CCNode* pImage)
 
 CCDragableItem * CCDragableItem::create(CCNode* normalSprite)
 {
-    return CCDragableItem::create(normalSprite, normalSprite, normalSprite, NULL, NULL);
-}
-
-CCDragableItem * CCDragableItem::create(CCNode* normalSprite, CCNode* selectedSprite, CCNode* disabledSprite)
-{
-    return CCDragableItem::create(normalSprite, selectedSprite, disabledSprite, NULL, NULL);
-}
-
-CCDragableItem * CCDragableItem::create(CCNode* normalSprite, CCNode* selectedSprite, CCObject* target, SEL_MenuHandler selector)
-{
-    return CCDragableItem::create(normalSprite, selectedSprite, NULL, target, selector);
-}
-
-CCDragableItem * CCDragableItem::create(CCNode *normalSprite, CCNode *selectedSprite, CCNode *disabledSprite, CCObject *target, SEL_MenuHandler selector)
-{
     CCDragableItem *pRet = new CCDragableItem();
-    pRet->initWithNormalSprite(normalSprite, selectedSprite, disabledSprite, target, selector);
+    pRet->initWithNormalSprite(normalSprite, NULL, NULL, true);
     pRet->autorelease();
     return pRet;
 }
 
-bool CCDragableItem::initWithNormalSprite(CCNode* normalSprite, CCNode* selectedSprite, CCNode* disabledSprite, CCObject* target, SEL_MenuHandler selector)
+
+
+bool CCDragableItem::initWithNormalSprite(CCNode* normalSprite, CCNode* selectedSprite, CCNode* disabledSprite, bool dragable)
 {
 
     setNormalImage(normalSprite);
     setSelectedImage(selectedSprite);
     setDisabledImage(disabledSprite);
-    
+    setAnchorPoint(ccp(0.5,0.5));
     if(m_pNormalImage)
     {
         this->setContentSize(m_pNormalImage->getContentSize());
     }
-    
+    this->registerWithTouchDispatcher();
 
     return true;
 }
 
-/**
- @since v0.99.5
- */
-void CCDragableItem::selected()
-{
-
-    
-    if (m_pNormalImage)
-    {
-        if (m_pDisabledImage)
-        {
-            m_pDisabledImage->setVisible(false);
-        }
-        
-        if (m_pSelectedImage)
-        {
-            m_pNormalImage->setVisible(false);
-            m_pSelectedImage->setVisible(true);
-        }
-        else
-        {
-            m_pNormalImage->setVisible(true);
-        }
-    }
-}
-
-void CCDragableItem::unselected()
-{
-
-    if (m_pNormalImage)
-    {
-        m_pNormalImage->setVisible(true);
-        
-        if (m_pSelectedImage)
-        {
-            m_pSelectedImage->setVisible(false);
-        }
-        
-        if (m_pDisabledImage)
-        {
-            m_pDisabledImage->setVisible(false);
-        }
-    }
-}
 
 void CCDragableItem::setEnabled(bool bEnabled)
 {
@@ -216,10 +165,6 @@ CCRect CCDragableItem::rect()
                       m_obContentSize.width, m_obContentSize.height);
 }
 
-bool CCDragableItem::isSelected()
-{
-    return m_bSelected;
-}
 
 // Helper
 void CCDragableItem::updateImagesVisibility()
@@ -247,6 +192,98 @@ void CCDragableItem::updateImagesVisibility()
     }
 }
 
+
+
+//DragableItem - Touch Events
+
+void CCDragableItem::setHandlerPriority(int newPriority)
+{
+    CCTouchDispatcher* pDispatcher = CCDirector::sharedDirector()->getTouchDispatcher();
+    pDispatcher->setPriority(newPriority, this);
+}
+
+void CCDragableItem::registerWithTouchDispatcher()
+{
+    CCDirector* pDirector = CCDirector::sharedDirector();
+    pDirector->getTouchDispatcher()->addTargetedDelegate(this, kCCDragableLayerHandlerPriority, true);
+}
+
+bool CCDragableItem::ccTouchBegan(CCTouch* touch, CCEvent* event)
+{
+    CC_UNUSED_PARAM(event);
+    //CCLOG("touch began");
+    
+    bool  isTouchInside = this->isTouchInside(touch);
+    
+    if (isTouchInside) {
+        m_eState = kCCDragableLayerStateTrackingTouch;
+    }
+    return isTouchInside;
+}
+
+void CCDragableItem::ccTouchEnded(CCTouch *touch, CCEvent* event)
+{
+    CC_UNUSED_PARAM(touch);
+    CC_UNUSED_PARAM(event);
+    CCAssert(m_eState == kCCDragableLayerStateTrackingTouch, "[Menu ccTouchEnded] -- invalid state");
+    m_eState = kCCDragableLayerStateWaiting;
+}
+
+void CCDragableItem::ccTouchCancelled(CCTouch *touch, CCEvent* event)
+{
+    CC_UNUSED_PARAM(touch);
+    CC_UNUSED_PARAM(event);
+    CCAssert(m_eState == kCCDragableLayerStateTrackingTouch, "[Menu ccTouchCancelled] -- invalid state");
+    m_eState = kCCDragableLayerStateWaiting;
+}
+
+void CCDragableItem::ccTouchMoved(CCTouch* touch, CCEvent* event)
+{
+    CC_UNUSED_PARAM(event);
+    CCAssert(m_eState == kCCDragableLayerStateTrackingTouch, "[Menu ccTouchMoved] -- invalid state");
+    
+    CCPoint nodePoint = this->convertTouchToNodeSpace(touch);
+    this->setPosition(this->convertToWorldSpace(nodePoint));
+}
+
+
+
+//CCDragableItem* CCDragableItem::itemForTouch(CCTouch *touch)
+bool CCDragableItem::isTouchInside(CCTouch *touch)
+{
+    CCPoint touchLocation = touch->getLocation();
+    CCPoint local = this->convertToNodeSpace(touchLocation);
+    CCRect r = this->rect();
+    r.origin = CCPointZero;
+
+    if (r.containsPoint(local)){
+        return true;
+    }else
+        return false;
+    /*
+    if (m_pChildren && m_pChildren->count() > 0)
+    {
+        CCObject* pObject = NULL;
+        CCARRAY_FOREACH(m_pChildren, pObject)
+        {
+            CCDragableItem* pChild = dynamic_cast<CCDragableItem*>(pObject);
+            //if (pChild && pChild->isVisible() && pChild->isEnabled())
+            if (pChild && pChild->isVisible())
+            {
+    
+                
+                
+                if (r.containsPoint(local))
+                {
+                    return pChild;
+                }
+            }
+        }
+    }
+    
+    return NULL;
+     */
+}
 
 
 NS_CC_END

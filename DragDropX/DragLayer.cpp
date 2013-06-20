@@ -49,17 +49,19 @@ bool DragDrop::init()
     // ask director the window size
     CCSize winSize = CCDirector::sharedDirector()->getWinSize();
     CCArray *images = CCArray::create(CCString::create("bird.png"), CCString::create("cat.png"), CCString::create("dog.png"), CCString::create("turtle.png"), NULL);
-    CCArray *movableItems = new CCArray();
+    //CCArray *movableItems = new CCArray();
+    CCLayer *layer = CCLayer::create();
     for (int i = 0; i < images->count(); i++) {
         CCString *imageName = (CCString *)images->objectAtIndex(i);
         CCSprite *sprite = CCSprite::create(imageName->getCString());
         float offsetFraction = ((float)(i+1))/(images->count()+1);
         CCDragableItem *item = CCDragableItem::create(sprite);
         item->setPosition(winSize.width*offsetFraction, winSize.height/2);
-        movableItems->addObject(item);
+        layer->addChild(item);
+        //movableItems->addObject(item);
     }
     
-    CCDragableLayer *layer = CCDragableLayer::createWithArray(movableItems);
+    //CCDragableLayer *layer = CCDragableLayer::createWithArray(movableItems);
     this->addChild(layer, 1);
     
   

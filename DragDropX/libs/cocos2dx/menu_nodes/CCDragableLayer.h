@@ -20,17 +20,6 @@ NS_CC_BEGIN
  * @addtogroup menu
  * @{
  */
-typedef enum  {
-	kCCDragableLayerStateWaiting,
-	kCCDragableLayerStateTrackingTouch
-} tCCDragableLayerState;
-
-enum {
-	//* priority used by the menu for the event handler
-    //* use the same value as CCDragableLaye
-	kCCDragableLayerHandlerPriority = -128,
-};
-
 
 /** @brief A CCDragableLaye
 * 
@@ -72,24 +61,15 @@ public:
     bool initWithArray(CCArray* pArrayOfItems);
     
     
-    /** set event handler priority. By default it is: kCCDragableLayerTouchPriority */
-    void setHandlerPriority(int newPriority);
+
     
     //super methods
-    virtual void registerWithTouchDispatcher();
     virtual void addChild(CCNode * child);
     virtual void addChild(CCNode * child, int zOrder);
     virtual void addChild(CCNode * child, int zOrder, int tag);
     virtual void removeChild(CCNode* child, bool cleanup);
     
-    /**
-     @brief For phone event handle functions
-     */
-    virtual bool ccTouchBegan(CCTouch* touch, CCEvent* event);
-    virtual void ccTouchEnded(CCTouch* touch, CCEvent* event);
-    virtual void ccTouchCancelled(CCTouch *touch, CCEvent* event);
-    virtual void ccTouchMoved(CCTouch* touch, CCEvent* event);
-    
+   
     /** FIXME: seems do not need this method
      override onExit
     */

@@ -7,6 +7,7 @@
 //
 
 #include "CCDragableLayer.h"
+
 #include "CCDirector.h"
 #include "touch_dispatcher/CCTouchDispatcher.h"
 #include "touch_dispatcher/CCTouch.h"
@@ -43,23 +44,6 @@ enum
 //CCDragableLayer
 //
 
-CCDragableLayer* CCDragableLayer::create()
-{
-    return CCDragableLayer::create(NULL, NULL);
-}
-
-CCDragableLayer * CCDragableLayer::create(CCDragableItem* item, ...)
-{
-    va_list args;
-    va_start(args,item);
-    
-    CCDragableLayer *pRet = CCDragableLayer::createWithItems(item, args);
-    
-    va_end(args);
-    
-    return pRet;
-}
-
 CCDragableLayer* CCDragableLayer::createWithArray(CCArray* pArrayOfItems)
 {
     CCDragableLayer *pRet = new CCDragableLayer();
@@ -75,27 +59,8 @@ CCDragableLayer* CCDragableLayer::createWithArray(CCArray* pArrayOfItems)
     return pRet;
 }
 
-CCDragableLayer* CCDragableLayer::createWithItems(CCDragableItem* item, va_list args)
-{
-    CCArray* pArray = NULL;
-    if( item )
-    {
-        pArray = CCArray::create(item, NULL);
-        CCDragableItem *i = va_arg(args, CCDragableItem*);
-        while(i)
-        {
-            pArray->addObject(i);
-            i = va_arg(args, CCDragableItem*);
-        }
-    }
-    
-    return CCDragableLayer::createWithArray(pArray);
-}
 
-CCDragableLayer* CCDragableLayer::createWithItem(CCDragableItem* item)
-{
-    return CCDragableLayer::create(item, NULL);
-}
+
 
 bool CCDragableLayer::init()
 {
@@ -126,10 +91,12 @@ bool CCDragableLayer::initWithArray(CCArray* pArrayOfItems)
             CCObject* pObj = NULL;
             CCARRAY_FOREACH(pArrayOfItems, pObj)
             {
+                /*
                 CCDragableItem* item = (CCDragableItem*)pObj;
                 item->setAnchorPoint(ccp(0.5f,0.5f));
                 this->addChild(item, z);
                 z++;
+                 */
             }
         }
         
@@ -174,7 +141,7 @@ void CCDragableLayer::onExit()
     {
         if (m_pSelectedItem)
         {
-            m_pSelectedItem->unselected();
+            //m_pSelectedItem->unselected();
             m_pSelectedItem = NULL;
         }
         
@@ -198,125 +165,5 @@ void CCDragableLayer::removeChild(CCNode* child, bool cleanup)
 }
 
 
-
-//Menu - Events
-
-
-void CCDragableLayer::setHandlerPriority(int newPriority)
-{
-    CCTouchDispatcher* pDispatcher = CCDirector::sharedDirector()->getTouchDispatcher();
-    pDispatcher->setPriority(newPriority, this);
-}
-
-void CCDragableLayer::registerWithTouchDispatcher()
-{
-    CCDirector* pDirector = CCDirector::sharedDirector();
-    pDirector->getTouchDispatcher()->addTargetedDelegate(this, this->getTouchPriority(), true);
-}
-
-bool CCDragableLayer::ccTouchBegan(CCTouch* touch, CCEvent* event)
-{
-    CC_UNUSED_PARAM(event);
-    CCLOG("touch began");
-    if (m_eState != kCCDragableLayerStateWaiting || ! m_bVisible || !m_bEnabled)
-    {
-        return false;
-    }
-    
-    for (CCNode *c = this->m_pParent; c != NULL; c = c->getParent())
-    {
-        if (c->isVisible() == false)
-        {
-            return false;
-        }
-    }
-    
-    m_pSelectedItem = this->itemForTouch(touch);
-    if (m_pSelectedItem)
-    {
-        CCLOG("selected item %p", m_pSelectedItem);
-        m_eState = kCCDragableLayerStateTrackingTouch;
-        //m_pSelectedItem->selected();
-        return true;
-    }
-    return false;
-}
-
-void CCDragableLayer::ccTouchEnded(CCTouch *touch, CCEvent* event)
-{
-    CC_UNUSED_PARAM(touch);
-    CC_UNUSED_PARAM(event);
-    CCAssert(m_eState == kCCDragableLayerStateTrackingTouch, "[Menu ccTouchEnded] -- invalid state");
-    if (m_pSelectedItem)
-    {
-        m_pSelectedItem->unselected();
-        //m_pSelectedItem->activate();
-    }
-    m_eState = kCCDragableLayerStateWaiting;
-}
-
-void CCDragableLayer::ccTouchCancelled(CCTouch *touch, CCEvent* event)
-{
-    CC_UNUSED_PARAM(touch);
-    CC_UNUSED_PARAM(event);
-    CCAssert(m_eState == kCCDragableLayerStateTrackingTouch, "[Menu ccTouchCancelled] -- invalid state");
-    if (m_pSelectedItem)
-    {
-        m_pSelectedItem->unselected();
-    }
-    m_eState = kCCDragableLayerStateWaiting;
-}
-
-void CCDragableLayer::ccTouchMoved(CCTouch* touch, CCEvent* event)
-{
-    CC_UNUSED_PARAM(event);
-    CCAssert(m_eState == kCCDragableLayerStateTrackingTouch, "[Menu ccTouchMoved] -- invalid state");
-        /*
-    CCDragableItem *currentItem = this->itemForTouch(touch);
-
-    if (currentItem != m_pSelectedItem)
-    {
-        if (m_pSelectedItem)
-        {
-            m_pSelectedItem->unselected();
-        }
-        m_pSelectedItem = currentItem;
-        if (m_pSelectedItem)
-        {
-            m_pSelectedItem->selected();
-        }
-    }*/
-    m_pSelectedItem->setPosition(this->convertTouchToNodeSpace(touch));
-}
-
-
-
-CCDragableItem* CCDragableLayer::itemForTouch(CCTouch *touch)
-{
-    CCPoint touchLocation = touch->getLocation();
-    
-    if (m_pChildren && m_pChildren->count() > 0)
-    {
-        CCObject* pObject = NULL;
-        CCARRAY_FOREACH(m_pChildren, pObject)
-        {
-            CCDragableItem* pChild = dynamic_cast<CCDragableItem*>(pObject);
-            //if (pChild && pChild->isVisible() && pChild->isEnabled())
-            if (pChild && pChild->isVisible())
-            {
-                CCPoint local = pChild->convertToNodeSpace(touchLocation);
-                CCRect r = pChild->rect();
-                r.origin = CCPointZero;
-                
-                if (r.containsPoint(local))
-                {
-                    return pChild;
-                }
-            }
-        }
-    }
-    
-    return NULL;
-}
 
 NS_CC_END
