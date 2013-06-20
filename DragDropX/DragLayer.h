@@ -24,6 +24,10 @@ public:
     
     // preprocessor macro for "static create()" constructor ( node() deprecated )
     CREATE_FUNC(DragDrop);
+    //static DragDrop *create();
+  
+    //virtual ~CCDragableItemDelegate() {}
+    virtual void itemDidDragedToPosition(cocos2d::CCDragableItem* item,cocos2d::CCPoint point) ;
 };
 
 #endif /* defined(__DragDropX__DragLayer__) */

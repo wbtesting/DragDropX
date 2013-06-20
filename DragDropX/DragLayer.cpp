@@ -12,6 +12,7 @@
 
 using namespace cocos2d;
 
+
 CCScene* DragDrop::scene()
 {
     // 'scene' is an autorelease object
@@ -57,7 +58,7 @@ bool DragDrop::init()
         float offsetFraction = ((float)(i+1))/(images->count()+1);
         CCDragableItem *item = CCDragableItem::create(sprite);
         item->setPosition(winSize.width*offsetFraction, winSize.height/2);
-        //item->setDelegate(this);
+        item->setDelegate(this);
         layer->addChild(item);
         //movableItems->addObject(item);
     }
@@ -69,8 +70,8 @@ bool DragDrop::init()
     return true;
 }
 
-/*
+
 void DragDrop::itemDidDragedToPosition(cocos2d::CCDragableItem *item, cocos2d::CCPoint point)
 {
-
-}*/
+    CCLog("DragDrop::item  %p DidDragedToPosition (%f,%f) ", item, point.x, point.y);
+}
