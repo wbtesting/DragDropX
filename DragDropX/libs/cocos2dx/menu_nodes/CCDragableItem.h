@@ -38,6 +38,22 @@ enum {
 };
 
 
+class CCDragableItem;
+
+class CCDragableItemDelegate
+{
+public:
+    virtual ~CCDragableItemDelegate() {};
+    
+    /*
+     *  position is in world space
+     */
+    virtual void itemDidDragedToPosition(CCDragableItem* item,CCPoint point) = 0;
+};
+
+
+
+
 /** @brief CCDragableItem base class
  *
  *  Modify from CCMenuItemSprite
@@ -54,6 +70,7 @@ public:
     CCDragableItem()
     :m_bEnabled(true)
     ,m_bDragable(true)
+    ,m_pDelegate(NULL)
     ,m_pNormalImage(NULL)
     ,m_pSelectedImage(NULL)
     ,m_pDisabledImage(NULL)
@@ -69,6 +86,8 @@ public:
     //@note: It's 'setIsEnable' in cocos2d-iphone.
     virtual void setEnabled(bool value);
 
+    CCDragableItemDelegate* getDelegate() { return m_pDelegate; }
+    void setDelegate(CCDragableItemDelegate* pDelegate) { m_pDelegate = pDelegate; }
 protected:
     virtual void updateImagesVisibility();
     
@@ -94,7 +113,10 @@ protected:
     bool m_bDragable;
     bool m_bEnabled;
     tCCDragableLayerState m_eState;
-
+    CCDragableItemDelegate* m_pDelegate;
 };
+
+
+
 NS_CC_END
 #endif /* defined(__DragDropX__CCDragableItem__) */

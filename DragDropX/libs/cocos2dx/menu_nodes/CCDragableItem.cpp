@@ -227,6 +227,12 @@ void CCDragableItem::ccTouchEnded(CCTouch *touch, CCEvent* event)
     CC_UNUSED_PARAM(event);
     CCAssert(m_eState == kCCDragableLayerStateTrackingTouch, "[Menu ccTouchEnded] -- invalid state");
     m_eState = kCCDragableLayerStateWaiting;
+    
+    CCPoint nodePoint = this->convertTouchToNodeSpace(touch);
+    if (m_pDelegate != NULL)
+    {
+        m_pDelegate->itemDidDragedToPosition(this, this->convertToWorldSpace(nodePoint));
+    }
 }
 
 void CCDragableItem::ccTouchCancelled(CCTouch *touch, CCEvent* event)
@@ -256,33 +262,7 @@ bool CCDragableItem::isTouchInside(CCTouch *touch)
     CCRect r = this->rect();
     r.origin = CCPointZero;
 
-    if (r.containsPoint(local)){
-        return true;
-    }else
-        return false;
-    /*
-    if (m_pChildren && m_pChildren->count() > 0)
-    {
-        CCObject* pObject = NULL;
-        CCARRAY_FOREACH(m_pChildren, pObject)
-        {
-            CCDragableItem* pChild = dynamic_cast<CCDragableItem*>(pObject);
-            //if (pChild && pChild->isVisible() && pChild->isEnabled())
-            if (pChild && pChild->isVisible())
-            {
-    
-                
-                
-                if (r.containsPoint(local))
-                {
-                    return pChild;
-                }
-            }
-        }
-    }
-    
-    return NULL;
-     */
+    return  r.containsPoint(local);
 }
 
 
