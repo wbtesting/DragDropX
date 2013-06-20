@@ -16,9 +16,6 @@
 
 NS_CC_BEGIN
 
-
-#define kCCItemSize 32
-
 /**
  * @addtogroup GUI
  * @{
