@@ -205,7 +205,7 @@ void CCDragableItem::setHandlerPriority(int newPriority)
 void CCDragableItem::registerWithTouchDispatcher()
 {
     CCDirector* pDirector = CCDirector::sharedDirector();
-    pDirector->getTouchDispatcher()->addTargetedDelegate(this, kCCDragableLayerHandlerPriority, true);
+    pDirector->getTouchDispatcher()->addTargetedDelegate(this, kCCDragableItemHandlerPriority, true);
 }
 
 bool CCDragableItem::ccTouchBegan(CCTouch* touch, CCEvent* event)
@@ -216,7 +216,7 @@ bool CCDragableItem::ccTouchBegan(CCTouch* touch, CCEvent* event)
     bool  isTouchInside = this->isTouchInside(touch);
     
     if (isTouchInside) {
-        m_eState = kCCDragableLayerStateTrackingTouch;
+        m_eState = kCCDragableItemStateTrackingTouch;
     }
     return isTouchInside;
 }
@@ -225,8 +225,8 @@ void CCDragableItem::ccTouchEnded(CCTouch *touch, CCEvent* event)
 {
     CC_UNUSED_PARAM(touch);
     CC_UNUSED_PARAM(event);
-    CCAssert(m_eState == kCCDragableLayerStateTrackingTouch, "[Menu ccTouchEnded] -- invalid state");
-    m_eState = kCCDragableLayerStateWaiting;
+    CCAssert(m_eState == kCCDragableItemStateTrackingTouch, "[Menu ccTouchEnded] -- invalid state");
+    m_eState = kCCDragableItemStateWaiting;
     
     CCPoint nodePoint = this->convertTouchToNodeSpace(touch);
     if (m_pDelegate != NULL)
@@ -239,14 +239,14 @@ void CCDragableItem::ccTouchCancelled(CCTouch *touch, CCEvent* event)
 {
     CC_UNUSED_PARAM(touch);
     CC_UNUSED_PARAM(event);
-    CCAssert(m_eState == kCCDragableLayerStateTrackingTouch, "[Menu ccTouchCancelled] -- invalid state");
-    m_eState = kCCDragableLayerStateWaiting;
+    CCAssert(m_eState == kCCDragableItemStateTrackingTouch, "[Menu ccTouchCancelled] -- invalid state");
+    m_eState = kCCDragableItemStateWaiting;
 }
 
 void CCDragableItem::ccTouchMoved(CCTouch* touch, CCEvent* event)
 {
     CC_UNUSED_PARAM(event);
-    CCAssert(m_eState == kCCDragableLayerStateTrackingTouch, "[Menu ccTouchMoved] -- invalid state");
+    CCAssert(m_eState == kCCDragableItemStateTrackingTouch, "[Menu ccTouchMoved] -- invalid state");
     
     CCPoint nodePoint = this->convertTouchToNodeSpace(touch);
     this->setPosition(this->convertToWorldSpace(nodePoint));

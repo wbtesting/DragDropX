@@ -27,14 +27,14 @@ NS_CC_BEGIN
  */
 
 typedef enum  {
-	kCCDragableLayerStateWaiting,
-	kCCDragableLayerStateTrackingTouch
-} tCCDragableLayerState;
+	kCCDragableItemStateWaiting,
+	kCCDragableItemStateTrackingTouch
+} tCCDragableItemState;
 
 enum {
 	//* priority used by the menu for the event handler
-    //* use the same value as CCDragableLaye
-	kCCDragableLayerHandlerPriority = -128,
+    //* use the same value as CCMenu
+	kCCDragableItemHandlerPriority = -128,
 };
 
 
@@ -112,7 +112,7 @@ protected:
     
     bool m_bDragable;
     bool m_bEnabled;
-    tCCDragableLayerState m_eState;
+    tCCDragableItemState m_eState;
     CCDragableItemDelegate* m_pDelegate;
 };
 
