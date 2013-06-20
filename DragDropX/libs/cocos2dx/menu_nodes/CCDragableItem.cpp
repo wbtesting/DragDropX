@@ -15,6 +15,8 @@
 #include "support/CCPointExtension.h"
 
 
+#define	kCCDragableItemMovedItemZOrder  401
+#define kCCDragableItemStillItemZOrder  400
 
 NS_CC_BEGIN
 
@@ -227,6 +229,7 @@ void CCDragableItem::ccTouchEnded(CCTouch *touch, CCEvent* event)
     CC_UNUSED_PARAM(event);
     CCAssert(m_eState == kCCDragableItemStateTrackingTouch, "[Menu ccTouchEnded] -- invalid state");
     m_eState = kCCDragableItemStateWaiting;
+    this->getParent()->reorderChild(this, kCCDragableItemStillItemZOrder);
     
     CCPoint nodePoint = this->convertTouchToNodeSpace(touch);
     if (m_pDelegate != NULL)
@@ -250,6 +253,7 @@ void CCDragableItem::ccTouchMoved(CCTouch* touch, CCEvent* event)
     
     CCPoint nodePoint = this->convertTouchToNodeSpace(touch);
     this->setPosition(this->convertToWorldSpace(nodePoint));
+    this->getParent()->reorderChild(this, kCCDragableItemMovedItemZOrder);
 }
 
 

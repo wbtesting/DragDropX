@@ -88,13 +88,14 @@ public:
 
     CCDragableItemDelegate* getDelegate() { return m_pDelegate; }
     void setDelegate(CCDragableItemDelegate* pDelegate) { m_pDelegate = pDelegate; }
+    
+    
 protected:
     virtual void updateImagesVisibility();
     
     //touch event
-
-    
     void setHandlerPriority(int newPriority);
+    bool isTouchInside(CCTouch *touch);
     virtual void registerWithTouchDispatcher();
     
     /**
@@ -104,12 +105,9 @@ protected:
     virtual void ccTouchEnded(CCTouch* touch, CCEvent* event);
     virtual void ccTouchCancelled(CCTouch *touch, CCEvent* event);
     virtual void ccTouchMoved(CCTouch* touch, CCEvent* event);
-    
-    
-    /** whether or not the item is selected  @since v0.8.2
-     */
-    bool isTouchInside(CCTouch *touch);
-    
+
+
+
     bool m_bDragable;
     bool m_bEnabled;
     tCCDragableItemState m_eState;
