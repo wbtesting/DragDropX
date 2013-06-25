@@ -71,7 +71,8 @@ bool DragDrop::init()
     return true;
 }
 
-cocos2d::CCNode *DragDrop::movedNodeForItem(cocos2d::CCDragableItem *item)
+//cocos2d::CCNode *DragDrop::movedNodeForItem(cocos2d::CCDragableItem *item)
+cocos2d::CCNode *DragDrop::movedNode()
 {
     //return NULL;
     CCSprite *sprite = CCSprite::create("cat.png");
@@ -85,16 +86,17 @@ cocos2d::CCNode *DragDrop::movedNodeForItem(cocos2d::CCDragableItem *item)
 }
 
 
-void DragDrop::nodeDidTouched(cocos2d::CCNode *node)
+void DragDrop::onDragBegan(cocos2d::CCDragableItem *item)
 {
-    CCLog("DragDrop::item  %p Did Touched ", node);
+    CCLog("DragDrop::item  %p Did Touched ", item);
+    //item->setMovedImage(this->movedNode());
 }
-void DragDrop::nodeMoveToPosition(cocos2d::CCNode *node, cocos2d::CCPoint point)
+void DragDrop::onDragging(cocos2d::CCNode *node, cocos2d::CCPoint point)
 {
     CCLog("DragDrop::item  %p move To Position (%f,%f) ", node, point.x, point.y);
 }
 
-void DragDrop::nodeDidDragToPosition(cocos2d::CCNode *node, cocos2d::CCPoint point)
+void DragDrop::onDragEnded(cocos2d::CCNode *node, cocos2d::CCPoint point)
 {
     node->removeFromParentAndCleanup(true);
     CCLog("DragDrop::item  %p DidDragedToPosition (%f,%f) ", node, point.x, point.y);

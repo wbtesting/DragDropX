@@ -176,14 +176,17 @@ bool CCDragableItem::ccTouchBegan(CCTouch* touch, CCEvent* event)
     
     if (isTouchInside) {
         if (m_pDelegate != NULL) {
-            setMovedImage(m_pDelegate->movedNodeForItem(this));
+            //setMovedImage(m_pDelegate->onD(this));
+            if (m_pDelegate) m_pDelegate->onDragBegan(this);
         }
     }
-    
+    /*
     if (m_pMovedImage) {
-        if (m_pDelegate) m_pDelegate->nodeDidTouched(m_pMovedImage);
+        if (m_pDelegate) m_pDelegate->onDragBegan(m_pMovedImage);
     }else
-        if (m_pDelegate) m_pDelegate->nodeDidTouched(this);
+     */
+    // can only be the item here,so 
+    
     
     return isTouchInside;
 }
@@ -202,10 +205,10 @@ void CCDragableItem::ccTouchEnded(CCTouch *touch, CCEvent* event)
         this->getParent()->reorderChild(this, kCCDragableItemStillItemZOrder);
         
         if (m_pMovedImage) {
-            m_pDelegate->nodeDidDragToPosition(m_pMovedImage, this->convertToWorldSpace(m_pMovedImage->getPosition()));
+            m_pDelegate->onDragEnded(m_pMovedImage, this->convertToWorldSpace(m_pMovedImage->getPosition()));
             setMovedImage(NULL);
         }else{
-            m_pDelegate->nodeDidDragToPosition(this,this->convertToWorldSpace(this->getPosition()));
+            m_pDelegate->onDragEnded(this,this->convertToWorldSpace(this->getPosition()));
         }
     }
 }
@@ -228,12 +231,12 @@ void CCDragableItem::ccTouchMoved(CCTouch* touch, CCEvent* event)
         CCPoint anchorPoint = this->getAnchorPointInPoints();
         m_pMovedImage->setPosition(ccpSub(nodePoint, anchorPoint));
         if (m_pDelegate != NULL)
-            m_pDelegate->nodeMoveToPosition(m_pMovedImage, this->convertToWorldSpace(m_pMovedImage->getPosition()));
+            m_pDelegate->onDragging(m_pMovedImage, this->convertToWorldSpace(m_pMovedImage->getPosition()));
         
     }else{
         this->setPosition(this->convertToWorldSpace(nodePoint));
         if (m_pDelegate != NULL)
-            m_pDelegate->nodeMoveToPosition(this, this->convertToWorldSpace(this->getPosition()));
+            m_pDelegate->onDragging(this, this->convertToWorldSpace(this->getPosition()));
     }
     this->getParent()->reorderChild(this, kCCDragableItemMovedItemZOrder);
 }

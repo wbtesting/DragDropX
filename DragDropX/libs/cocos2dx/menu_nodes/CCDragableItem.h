@@ -46,17 +46,19 @@ public:
      *  if client provide movedImage, then will drag the movedImage
      */
 
-    virtual CCNode *movedNodeForItem(CCDragableItem *item) = 0;
+    //virtual CCNode *movedNodeForItem(CCDragableItem *item) = 0;
     
     /**
      *  For the 3 api below:
      *  if client provided movedImage, node will be the movedImage
      *  if not, node will be the CCDragableItem
-     *  all the postion is in world space.
+     *  all the position is in world space.
+     *  NOTICE: onDragBegan() take a CCDragableItem instead of CCNode,
+     *  because client need to provide moveImage if nessesary in onDragBegan
      */
-    virtual void nodeDidTouched(CCNode *node) = 0;
-    virtual void nodeMoveToPosition(CCNode *node,CCPoint point) = 0 ;
-    virtual void nodeDidDragToPosition(CCNode *node,CCPoint point) = 0;
+    virtual void onDragBegan(CCDragableItem *item) = 0;
+    virtual void onDragging(CCNode *node,CCPoint point) = 0 ;
+    virtual void onDragEnded(CCNode *node,CCPoint point) = 0;
 };
 
 
@@ -86,6 +88,7 @@ public:
     
     /** Returns the outside box */
     CCRect rect();
+
 
     virtual bool isEnabled();
     //@note: It's 'setIsEnable' in cocos2d-iphone.
