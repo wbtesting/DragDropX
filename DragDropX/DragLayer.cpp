@@ -73,7 +73,15 @@ bool DragDrop::init()
 
 cocos2d::CCNode *DragDrop::movedNodeForItem(cocos2d::CCDragableItem *item)
 {
-    return NULL;
+    //return NULL;
+    CCSprite *sprite = CCSprite::create("cat.png");
+    sprite->runAction(CCRotateTo::create(0.1,0));
+    CCRotateBy *rotLeft = CCRotateBy::create(0.1, -4.0);
+    CCRotateBy *rotCenter = CCRotateBy::create(0.1, 0.0);
+    CCRotateBy *rotRight = CCRotateBy::create(0.1, 4.0);
+    CCSequence *rotSeq = CCSequence::create(rotLeft,rotCenter,rotRight,rotCenter,NULL);
+    sprite->runAction(CCRepeatForever::create(rotSeq));
+    return sprite;
 }
 
 
@@ -88,6 +96,7 @@ void DragDrop::nodeMoveToPosition(cocos2d::CCNode *node, cocos2d::CCPoint point)
 
 void DragDrop::nodeDidDragToPosition(cocos2d::CCNode *node, cocos2d::CCPoint point)
 {
+    node->removeFromParentAndCleanup(true);
     CCLog("DragDrop::item  %p DidDragedToPosition (%f,%f) ", node, point.x, point.y);
 }
 

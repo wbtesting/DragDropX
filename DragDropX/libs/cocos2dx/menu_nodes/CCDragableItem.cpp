@@ -73,10 +73,11 @@ void CCDragableItem::setMovedImage(CCNode* pImage)
 {
     if (pImage != m_pMovedImage)
     {
-        pImage->setAnchorPoint(ccp(0, 0));
+        
         m_pMovedImage = pImage;
         
         if (m_pMovedImage) {
+            pImage->setAnchorPoint(ccp(0, 0));
             removeChild(m_pMovedImage,true);
             addChild(pImage, 0, kSelectedTag);
         }
