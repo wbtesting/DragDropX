@@ -42,10 +42,21 @@ class CCDragableItemDelegate
 public:
     virtual ~CCDragableItemDelegate() {};
     
-    /*
-     *  position is in world space
+    /**
+     *  if client provide movedImage, then will drag the movedImage
      */
-    virtual void itemDidDragedToPosition(CCDragableItem* item,CCPoint point) = 0;
+
+    virtual CCNode *movedNodeForItem(CCDragableItem *item) = 0;
+    
+    /**
+     *  For the 3 api below:
+     *  if client provided movedImage, node will be the movedImage
+     *  if not, node will be the CCDragableItem
+     *  all the postion is in world space.
+     */
+    virtual void nodeDidTouched(CCNode *node) = 0;
+    virtual void nodeMoveToPosition(CCNode *node,CCPoint point) = 0 ;
+    virtual void nodeDidDragToPosition(CCNode *node,CCPoint point) = 0;
 };
 
 
@@ -60,21 +71,18 @@ class CC_DLL CCDragableItem : public CCNode,public CCTouchDelegate
     /** the image used when the item is not selected */
     CC_PROPERTY(CCNode*, m_pNormalImage, NormalImage);
     /** the image used when the item is selected */
-    CC_PROPERTY(CCNode*, m_pSelectedImage, SelectedImage);
-    /** the image used when the item is disabled */
-    CC_PROPERTY(CCNode*, m_pDisabledImage, DisabledImage);
+    CC_PROPERTY(CCNode*, m_pMovedImage, MovedImage);
 public:
     CCDragableItem()
     :m_bEnabled(true)
     ,m_bDragable(true)
     ,m_pDelegate(NULL)
     ,m_pNormalImage(NULL)
-    ,m_pSelectedImage(NULL)
-    ,m_pDisabledImage(NULL)
+    ,m_pMovedImage(NULL)
     {}
     
     static CCDragableItem * create(CCNode* normalSprite);
-    bool initWithNormalSprite(CCNode* normalSprite, CCNode* selectedSprite, CCNode* disabledSprite, bool dragable);
+    bool initWithNormalSprite(CCNode* normalSprite, bool dragable);
     
     /** Returns the outside box */
     CCRect rect();

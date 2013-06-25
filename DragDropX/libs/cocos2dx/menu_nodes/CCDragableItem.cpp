@@ -23,13 +23,14 @@ NS_CC_BEGIN
 //static unsigned int _globalFontSize = kCCItemSize;
 static std::string _globalFontName = "Marker Felt";
 //static bool _globalFontNameRelease = false;
-
+/*
 const unsigned int    kCurrentItem = 0xc0c05001;
 const unsigned int    kZoomActionTag = 0xc0c05002;
-
+*/
 const unsigned int    kNormalTag = 0x1;
 const unsigned int    kSelectedTag = 0x2;
 const unsigned int    kDisableTag = 0x3;
+
 //
 // CCDragableItem
 //
@@ -62,56 +63,26 @@ void CCDragableItem::setNormalImage(CCNode* pImage)
     }
 }
 
-CCNode * CCDragableItem::getSelectedImage()
+
+CCNode * CCDragableItem::getMovedImage()
 {
-    return m_pSelectedImage;
+    return m_pMovedImage;
 }
 
-void CCDragableItem::setSelectedImage(CCNode* pImage)
+void CCDragableItem::setMovedImage(CCNode* pImage)
 {
-    if (pImage != m_pNormalImage)
+    if (pImage != m_pMovedImage)
     {
-        if (pImage)
-        {
+        pImage->setAnchorPoint(ccp(0, 0));
+        m_pMovedImage = pImage;
+        
+        if (m_pMovedImage) {
+            removeChild(m_pMovedImage,true);
             addChild(pImage, 0, kSelectedTag);
-            pImage->setAnchorPoint(ccp(0, 0));
         }
-        
-        if (m_pSelectedImage)
-        {
-            removeChild(m_pSelectedImage, true);
-        }
-        
-        m_pSelectedImage = pImage;
         this->updateImagesVisibility();
     }
 }
-
-CCNode * CCDragableItem::getDisabledImage()
-{
-    return m_pDisabledImage;
-}
-
-void CCDragableItem::setDisabledImage(CCNode* pImage)
-{
-    if (pImage != m_pNormalImage)
-    {
-        if (pImage)
-        {
-            addChild(pImage, 0, kDisableTag);
-            pImage->setAnchorPoint(ccp(0, 0));
-        }
-        
-        if (m_pDisabledImage)
-        {
-            removeChild(m_pDisabledImage, true);
-        }
-        
-        m_pDisabledImage = pImage;
-        this->updateImagesVisibility();
-    }
-}
-
 
 
 //
@@ -121,19 +92,16 @@ void CCDragableItem::setDisabledImage(CCNode* pImage)
 CCDragableItem * CCDragableItem::create(CCNode* normalSprite)
 {
     CCDragableItem *pRet = new CCDragableItem();
-    pRet->initWithNormalSprite(normalSprite, NULL, NULL, true);
+    pRet->initWithNormalSprite(normalSprite, true);
     pRet->autorelease();
     return pRet;
 }
 
 
 
-bool CCDragableItem::initWithNormalSprite(CCNode* normalSprite, CCNode* selectedSprite, CCNode* disabledSprite, bool dragable)
+bool CCDragableItem::initWithNormalSprite(CCNode* normalSprite, bool dragable)
 {
-
     setNormalImage(normalSprite);
-    setSelectedImage(selectedSprite);
-    setDisabledImage(disabledSprite);
     setAnchorPoint(ccp(0.5,0.5));
     if(m_pNormalImage)
     {
@@ -174,23 +142,7 @@ void CCDragableItem::updateImagesVisibility()
     if (m_bEnabled)
     {
         if (m_pNormalImage)   m_pNormalImage->setVisible(true);
-        if (m_pSelectedImage) m_pSelectedImage->setVisible(false);
-        if (m_pDisabledImage) m_pDisabledImage->setVisible(false);
-    }
-    else
-    {
-        if (m_pDisabledImage)
-        {
-            if (m_pNormalImage)   m_pNormalImage->setVisible(false);
-            if (m_pSelectedImage) m_pSelectedImage->setVisible(false);
-            if (m_pDisabledImage) m_pDisabledImage->setVisible(true);
-        }
-        else
-        {
-            if (m_pNormalImage)   m_pNormalImage->setVisible(true);
-            if (m_pSelectedImage) m_pSelectedImage->setVisible(false);
-            if (m_pDisabledImage) m_pDisabledImage->setVisible(false);
-        }
+        if (m_pMovedImage) m_pMovedImage->setVisible(true);
     }
 }
 
@@ -220,6 +172,18 @@ bool CCDragableItem::ccTouchBegan(CCTouch* touch, CCEvent* event)
     if (isTouchInside) {
         m_eState = kCCDragableItemStateTrackingTouch;
     }
+    
+    if (isTouchInside) {
+        if (m_pDelegate != NULL) {
+            setMovedImage(m_pDelegate->movedNodeForItem(this));
+        }
+    }
+    
+    if (m_pMovedImage) {
+        if (m_pDelegate) m_pDelegate->nodeDidTouched(m_pMovedImage);
+    }else
+        if (m_pDelegate) m_pDelegate->nodeDidTouched(this);
+    
     return isTouchInside;
 }
 
@@ -229,12 +193,19 @@ void CCDragableItem::ccTouchEnded(CCTouch *touch, CCEvent* event)
     CC_UNUSED_PARAM(event);
     CCAssert(m_eState == kCCDragableItemStateTrackingTouch, "[Menu ccTouchEnded] -- invalid state");
     m_eState = kCCDragableItemStateWaiting;
-    this->getParent()->reorderChild(this, kCCDragableItemStillItemZOrder);
+
     
-    CCPoint nodePoint = this->convertTouchToNodeSpace(touch);
-    if (m_pDelegate != NULL)
-    {
-        m_pDelegate->itemDidDragedToPosition(this, this->convertToWorldSpace(nodePoint));
+    //CCPoint nodePoint = this->convertTouchToNodeSpace(touch);
+    if (m_pDelegate != NULL){
+
+        this->getParent()->reorderChild(this, kCCDragableItemStillItemZOrder);
+        
+        if (m_pMovedImage) {
+            m_pDelegate->nodeDidDragToPosition(m_pMovedImage, this->convertToWorldSpace(m_pMovedImage->getPosition()));
+            setMovedImage(NULL);
+        }else{
+            m_pDelegate->nodeDidDragToPosition(this,this->convertToWorldSpace(this->getPosition()));
+        }
     }
 }
 
@@ -252,7 +223,17 @@ void CCDragableItem::ccTouchMoved(CCTouch* touch, CCEvent* event)
     CCAssert(m_eState == kCCDragableItemStateTrackingTouch, "[Menu ccTouchMoved] -- invalid state");
     
     CCPoint nodePoint = this->convertTouchToNodeSpace(touch);
-    this->setPosition(this->convertToWorldSpace(nodePoint));
+    if (m_pMovedImage) {
+        CCPoint anchorPoint = this->getAnchorPointInPoints();
+        m_pMovedImage->setPosition(ccpSub(nodePoint, anchorPoint));
+        if (m_pDelegate != NULL)
+            m_pDelegate->nodeMoveToPosition(m_pMovedImage, this->convertToWorldSpace(m_pMovedImage->getPosition()));
+        
+    }else{
+        this->setPosition(this->convertToWorldSpace(nodePoint));
+        if (m_pDelegate != NULL)
+            m_pDelegate->nodeMoveToPosition(this, this->convertToWorldSpace(this->getPosition()));
+    }
     this->getParent()->reorderChild(this, kCCDragableItemMovedItemZOrder);
 }
 
