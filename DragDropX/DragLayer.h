@@ -27,7 +27,10 @@ public:
     //static DragDrop *create();
   
     //virtual ~CCDragableItemDelegate() {}
-    virtual void itemDidDragedToPosition(cocos2d::CCDragableItem* item,cocos2d::CCPoint point) ;
+    virtual cocos2d::CCNode *movedNodeForItem(cocos2d::CCDragableItem *item);
+    virtual void nodeDidTouched(cocos2d::CCNode *node);
+    virtual void nodeMoveToPosition(cocos2d::CCNode *node,cocos2d::CCPoint point)  ;
+    virtual void nodeDidDragToPosition(cocos2d::CCNode *node,cocos2d::CCPoint point);
 };
 
 #endif /* defined(__DragDropX__DragLayer__) */

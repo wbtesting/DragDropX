@@ -71,16 +71,19 @@ bool DragDrop::init()
     return true;
 }
 
-
+cocos2d::CCNode *DragDrop::movedNodeForItem(cocos2d::CCDragableItem *item)
+{
+    return NULL;
+}
 
 
 void DragDrop::nodeDidTouched(cocos2d::CCNode *node)
 {
-    
+    CCLog("DragDrop::item  %p Did Touched ", node);
 }
 void DragDrop::nodeMoveToPosition(cocos2d::CCNode *node, cocos2d::CCPoint point)
 {
-    
+    CCLog("DragDrop::item  %p move To Position (%f,%f) ", node, point.x, point.y);
 }
 
 void DragDrop::nodeDidDragToPosition(cocos2d::CCNode *node, cocos2d::CCPoint point)
@@ -89,7 +92,4 @@ void DragDrop::nodeDidDragToPosition(cocos2d::CCNode *node, cocos2d::CCPoint poi
 }
 
 
-cocos2d::CCNode *DragDrop::movedNodeForItem(cocos2d::CCDragableItem *item)
-{
-    return NULL;
-}
+
