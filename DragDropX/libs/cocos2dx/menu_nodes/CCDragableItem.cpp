@@ -94,14 +94,14 @@ void CCDragableItem::setMovedImage(CCNode* pImage)
 CCDragableItem * CCDragableItem::create(CCNode* normalSprite)
 {
     CCDragableItem *pRet = new CCDragableItem();
-    pRet->initWithNormalSprite(normalSprite, true);
+    pRet->initWithNormalSprite(normalSprite);
     pRet->autorelease();
     return pRet;
 }
 
 
 
-bool CCDragableItem::initWithNormalSprite(CCNode* normalSprite, bool dragable)
+bool CCDragableItem::initWithNormalSprite(CCNode* normalSprite)
 {
     setNormalImage(normalSprite);
     setAnchorPoint(ccp(0.5,0.5));
