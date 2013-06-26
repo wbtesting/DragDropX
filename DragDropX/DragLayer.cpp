@@ -59,10 +59,16 @@ bool DragDrop::init()
         CCDragableItem *item = CCDragableItem::create(sprite);
         item->setMovedImage(this->movedNode());
         //item->setPosition(winSize.width*offsetFraction, winSize.height/2);
-        item->setPosition(20,winSize.height*offsetFraction);
+        item->setPosition(ccp(20,winSize.height*offsetFraction));
         item->setDelegate(this);
         layer->addChild(item);
         //movableItems->addObject(item);
+        
+
+        icon = CCSprite::create("Icon.png");
+        icon->setPosition(ccp(200, 80 + 160));
+        layer->addChild(icon);
+
     }
     
     //CCDragableLayer *layer = CCDragableLayer::createWithArray(movableItems);
@@ -77,6 +83,7 @@ cocos2d::CCNode *DragDrop::movedNode()
 {
     //return NULL;
     CCSprite *sprite = CCSprite::create("cat.png");
+    sprite->setAnchorPoint(ccp(0,0));
     sprite->runAction(CCRotateTo::create(0.1,0));
     CCRotateBy *rotLeft = CCRotateBy::create(0.1, -4.0);
     CCRotateBy *rotCenter = CCRotateBy::create(0.1, 0.0);
@@ -99,8 +106,16 @@ void DragDrop::onDragging(cocos2d::CCNode *node, cocos2d::CCPoint point)
 
 void DragDrop::onDragEnded(cocos2d::CCNode *node, cocos2d::CCPoint point)
 {
-    //node->removeFromParentAndCleanup(true);
-    CCLog("DragDrop::item  %p DidDragedToPosition (%f,%f) ", node, point.x, point.y);
+    //
+    //CCLog("DragDrop::item  %p DidDragedToPosition (%f,%f) ", node, point.x, point.y);
+    CCRect rect = CCRectMake(point.x, point.y, node->getContentSize().width, node->getContentSize().height);
+    if (rect.intersectsRect(icon->boundingBox())){
+        CCLog("keep ");
+
+        icon->addChild(this->movedNode());
+        CCDragableItem *item = (CCDragableItem *) node->getParent();
+        item->setEnabled(false);
+    }
 }
 
 

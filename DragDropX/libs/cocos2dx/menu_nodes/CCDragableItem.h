@@ -77,7 +77,7 @@ class CC_DLL CCDragableItem : public CCNode,public CCTouchDelegate
 public:
     CCDragableItem()
     :m_bEnabled(true)
-    ,m_bDragable(true)
+    //,m_bDragable(true)
     ,m_pDelegate(NULL)
     ,m_pNormalImage(NULL)
     ,m_pMovedImage(NULL)
@@ -116,7 +116,7 @@ protected:
 
 
 
-    bool m_bDragable;
+    //bool m_bDragable; no used for now
     bool m_bEnabled;
     tCCDragableItemState m_eState;
     CCDragableItemDelegate* m_pDelegate;

@@ -31,6 +31,8 @@ public:
     virtual void onDragBegan(cocos2d::CCDragableItem *item);
     virtual void onDragging(cocos2d::CCNode *node,cocos2d::CCPoint point)  ;
     virtual void onDragEnded(cocos2d::CCNode *node,cocos2d::CCPoint point);
+    
+    cocos2d::CCSprite *icon;
 };
 
 #endif /* defined(__DragDropX__DragLayer__) */

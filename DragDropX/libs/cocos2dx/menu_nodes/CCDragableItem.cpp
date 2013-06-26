@@ -86,6 +86,7 @@ void CCDragableItem::setMovedImage(CCNode* pImage)
 }
 
 
+
 //
 //CCDragableItem
 //
@@ -118,7 +119,8 @@ void CCDragableItem::setEnabled(bool bEnabled)
 {
     if( m_bEnabled != bEnabled )
     {
-        this->updateImagesVisibility();
+        m_bEnabled = bEnabled;
+        //this->updateImagesVisibility();
     }
 }
 
@@ -131,6 +133,7 @@ bool CCDragableItem::isEnabled()
 
 CCRect CCDragableItem::rect()
 {
+    /*
     CCNode *moveNode = this;
     if (this->getMovedImage()) {
         moveNode = this->getMovedImage();
@@ -138,19 +141,19 @@ CCRect CCDragableItem::rect()
     return CCRectMake( moveNode->getPosition().x - moveNode->getContentSize().width * moveNode->getAnchorPoint().x,
                       moveNode->getPosition().y - moveNode->getContentSize().height * moveNode->getAnchorPoint().y,
                       moveNode->getContentSize().width,
-                      moveNode->getContentSize().height);
-    /*
+                      moveNode->getContentSize().height);*/
+
     return CCRectMake( m_obPosition.x - m_obContentSize.width * m_obAnchorPoint.x,
                       m_obPosition.y - m_obContentSize.height * m_obAnchorPoint.y,
-                      m_obContentSize.width, m_obContentSize.height);*/
+                      m_obContentSize.width, m_obContentSize.height);
 }
 
 
 // Helper
 void CCDragableItem::updateImagesVisibility()
 {
-    if (m_bEnabled)
-    {
+    //if (m_bEnabled)
+
         if (m_eState == kCCDragableItemStateTrackingTouch) { //moving
             if (m_pNormalImage)   m_pNormalImage->setVisible(true);
             if (m_pMovedImage) m_pMovedImage->setVisible(true);
@@ -159,7 +162,7 @@ void CCDragableItem::updateImagesVisibility()
             if (m_pMovedImage) m_pMovedImage->setVisible(false);
         }
         
-    }
+
 }
 
 
@@ -184,26 +187,20 @@ bool CCDragableItem::ccTouchBegan(CCTouch* touch, CCEvent* event)
     //CCLOG("touch began");
     
     bool  isTouchInside = this->isTouchInside(touch);
-    
-    if (isTouchInside) {
+
+    if (isTouchInside && this->isEnabled()) {
+        
         m_eState = kCCDragableItemStateTrackingTouch;
-    }
-    
-    if (isTouchInside) {
         if (m_pDelegate != NULL) {
             //setMovedImage(m_pDelegate->onD(this));
             if (m_pDelegate) m_pDelegate->onDragBegan(this);
         }
+        return true;
     }
-    /*
-    if (m_pMovedImage) {
-        if (m_pDelegate) m_pDelegate->onDragBegan(m_pMovedImage);
-    }else
-     */
-    // can only be the item here,so 
-    
-    
-    return isTouchInside;
+    return  false;
+    //this->updateImagesVisibility();
+
+
 }
 
 void CCDragableItem::ccTouchEnded(CCTouch *touch, CCEvent* event)
@@ -221,6 +218,8 @@ void CCDragableItem::ccTouchEnded(CCTouch *touch, CCEvent* event)
         
         if (m_pMovedImage) {
             m_pDelegate->onDragEnded(m_pMovedImage, this->convertToWorldSpace(m_pMovedImage->getPosition()));
+            m_pMovedImage->setPosition(ccp(0, 0));
+            updateImagesVisibility();
             //setMovedImage(NULL);
         }else{
             m_pDelegate->onDragEnded(this,this->convertToWorldSpace(this->getPosition()));
