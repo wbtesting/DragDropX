@@ -13,7 +13,9 @@
 #include "CCProtocols.h"
 #include "cocoa/CCArray.h"
 #include "touch_dispatcher/CCTouchDelegateProtocol.h"
-
+#include "CCFloat.h"
+//#include "LuaUtil.h"
+#define ScriptType 0
 NS_CC_BEGIN
 
 /**
@@ -61,8 +63,8 @@ public:
      *  all the position is in world space.
 
      */
-    virtual void onDragging(CCNode *node,CCPoint point) = 0 ;
-    virtual void onDragEnded(CCNode *node,CCPoint point) = 0;
+    virtual void onDragging(CCDragableItem *item,CCFloat *x, CCFloat *y) = 0 ;
+    virtual void onDragEnded(CCDragableItem *item ,CCFloat *x, CCFloat *y) = 0;
 };
 
 
@@ -99,7 +101,14 @@ public:
 
     CCDragableItemDelegate* getDelegate() { return m_pDelegate; }
     void setDelegate(CCDragableItemDelegate* pDelegate) { m_pDelegate = pDelegate; }
+#if ScriptType == 1
     
+    /**
+     * 设置、获取事件委托（脚本）
+     */
+    CC_SYNTHESIZE(cocos2d::CCObject*, scriptDelegate, ScriptDelegate);
+    
+#endif
     
 protected:
     virtual void updateImagesVisibility();

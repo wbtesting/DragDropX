@@ -194,6 +194,14 @@ bool CCDragableItem::ccTouchBegan(CCTouch* touch, CCEvent* event)
         if (m_pDelegate != NULL) {
             //setMovedImage(m_pDelegate->onD(this));
             if (m_pDelegate) m_pDelegate->onDragBegan(this);
+            
+#if ScriptType == 1
+            if (scriptDelegate != NULL) {
+                CCArray* params = CCArray::createWithObject(this);
+                CCArray* paramTypes = CCArray::createWithObject(CCString::create("CCDragableItem"));
+                LuaUtil::executePeertableFunction(scriptDelegate, "onDragBegan", params, paramTypes, false);
+            }
+#endif
         }
         return true;
     }
@@ -211,19 +219,32 @@ void CCDragableItem::ccTouchEnded(CCTouch *touch, CCEvent* event)
     m_eState = kCCDragableItemStateWaiting;
 
     
-    //CCPoint nodePoint = this->convertTouchToNodeSpace(touch);
-    if (m_pDelegate != NULL){
 
+    if (m_pDelegate != NULL){
         this->getParent()->reorderChild(this, kCCDragableItemStillItemZOrder);
+        //CCPoint pointInWorldSpace = this->convertToWorldSpace(m_pMovedImage->getPosition());
+        CCNode *moveNode = this;
+        if (m_pMovedImage) {
+            moveNode = m_pMovedImage;
+        }
+        
+        CCPoint moveNodePoint = this->convertToWorldSpace(moveNode->getPosition());
+        m_pDelegate->onDragEnded(this,CCFloat::create(moveNodePoint.x), CCFloat::create(moveNodePoint.y));
+#if ScriptType == 1
+            if (scriptDelegate != NULL) {
+                CCArray* params = CCArray::create(this,CCFloat::create(moveNodePoint.x), CCFloat::create(moveNodePoint.y),NULL);
+                CCArray* paramTypes = CCArray::create(CCString::create("CCDragableItem"),CCString::create("CCFloat"),CCString::create("CCFloat"),NULL);
+                LuaUtil::executePeertableFunction(scriptDelegate, "onDragEnded", params, paramTypes, false);
+            }
+#endif
+        
         
         if (m_pMovedImage) {
-            m_pDelegate->onDragEnded(m_pMovedImage, this->convertToWorldSpace(m_pMovedImage->getPosition()));
             m_pMovedImage->setPosition(ccp(0, 0));
             updateImagesVisibility();
             //setMovedImage(NULL);
-        }else{
-            m_pDelegate->onDragEnded(this,this->convertToWorldSpace(this->getPosition()));
         }
+
     }
 }
 
@@ -241,17 +262,25 @@ void CCDragableItem::ccTouchMoved(CCTouch* touch, CCEvent* event)
     CCAssert(m_eState == kCCDragableItemStateTrackingTouch, "[Menu ccTouchMoved] -- invalid state");
     
     CCPoint nodePoint = this->convertTouchToNodeSpace(touch);
+    CCNode *moveNode = this;
     if (m_pMovedImage) {
         CCPoint anchorPoint = this->getAnchorPointInPoints();
         m_pMovedImage->setPosition(ccpSub(nodePoint, anchorPoint));
-        if (m_pDelegate != NULL)
-            m_pDelegate->onDragging(m_pMovedImage, this->convertToWorldSpace(m_pMovedImage->getPosition()));
-        
+        moveNode = m_pMovedImage;
     }else{
         this->setPosition(this->convertToWorldSpace(nodePoint));
-        if (m_pDelegate != NULL)
-            m_pDelegate->onDragging(this, this->convertToWorldSpace(this->getPosition()));
     }
+    CCPoint moveNodePoint = this->convertToWorldSpace(moveNode->getPosition());
+    if (m_pDelegate != NULL)
+        m_pDelegate->onDragging(this,CCFloat::create(moveNodePoint.x), CCFloat::create(moveNodePoint.y));
+#if ScriptType == 1
+            if (scriptDelegate != NULL) {
+                CCArray* params = CCArray::create(this,CCFloat::create(moveNodePoint.x), CCFloat::create(moveNodePoint.y),NULL);
+                CCArray* paramTypes = CCArray::create(CCString::create("CCDragableItem"),CCString::create("CCFloat"),CCString::create("CCFloat"),NULL);
+                LuaUtil::executePeertableFunction(scriptDelegate, "onDragging", params, paramTypes, false);
+            }
+#endif
+    
     this->updateImagesVisibility();
     this->getParent()->reorderChild(this, kCCDragableItemMovedItemZOrder);
 }

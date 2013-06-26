@@ -29,8 +29,8 @@ public:
     //virtual ~CCDragableItemDelegate() {}
     //virtual cocos2d::CCNode *movedNodeForItem(cocos2d::CCDragableItem *item);
     virtual void onDragBegan(cocos2d::CCDragableItem *item);
-    virtual void onDragging(cocos2d::CCNode *node,cocos2d::CCPoint point)  ;
-    virtual void onDragEnded(cocos2d::CCNode *node,cocos2d::CCPoint point);
+    virtual void onDragging(cocos2d::CCDragableItem *item, cocos2d::CCFloat *x, cocos2d::CCFloat *y);
+    virtual void onDragEnded(cocos2d::CCDragableItem *item, cocos2d::CCFloat *x, cocos2d::CCFloat *y);
     
     cocos2d::CCSprite *icon;
 };

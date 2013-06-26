@@ -99,21 +99,21 @@ void DragDrop::onDragBegan(cocos2d::CCDragableItem *item)
     CCLog("DragDrop::item  %p Did Touched ", item);
     //item->setMovedImage(this->movedNode());
 }
-void DragDrop::onDragging(cocos2d::CCNode *node, cocos2d::CCPoint point)
+void DragDrop::onDragging(cocos2d::CCDragableItem *item, cocos2d::CCFloat *x, cocos2d::CCFloat *y)
 {
     //CCLog("DragDrop::item  %p move To Position (%f,%f) ", node, point.x, point.y);
 }
 
-void DragDrop::onDragEnded(cocos2d::CCNode *node, cocos2d::CCPoint point)
+void DragDrop::onDragEnded(cocos2d::CCDragableItem *item, cocos2d::CCFloat *x, cocos2d::CCFloat *y)
 {
     //
     //CCLog("DragDrop::item  %p DidDragedToPosition (%f,%f) ", node, point.x, point.y);
-    CCRect rect = CCRectMake(point.x, point.y, node->getContentSize().width, node->getContentSize().height);
+    CCNode *node = item->getMovedImage();
+    CCRect rect = CCRectMake(x->getValue(),y->getValue(), node->getContentSize().width, node->getContentSize().height);
     if (rect.intersectsRect(icon->boundingBox())){
         CCLog("keep ");
 
         icon->addChild(this->movedNode());
-        CCDragableItem *item = (CCDragableItem *) node->getParent();
         item->setEnabled(false);
     }
 }
