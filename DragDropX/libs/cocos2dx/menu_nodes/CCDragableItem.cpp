@@ -131,9 +131,18 @@ bool CCDragableItem::isEnabled()
 
 CCRect CCDragableItem::rect()
 {
+    CCNode *moveNode = this;
+    if (this->getMovedImage()) {
+        moveNode = this->getMovedImage();
+    }
+    return CCRectMake( moveNode->getPosition().x - moveNode->getContentSize().width * moveNode->getAnchorPoint().x,
+                      moveNode->getPosition().y - moveNode->getContentSize().height * moveNode->getAnchorPoint().y,
+                      moveNode->getContentSize().width,
+                      moveNode->getContentSize().height);
+    /*
     return CCRectMake( m_obPosition.x - m_obContentSize.width * m_obAnchorPoint.x,
                       m_obPosition.y - m_obContentSize.height * m_obAnchorPoint.y,
-                      m_obContentSize.width, m_obContentSize.height);
+                      m_obContentSize.width, m_obContentSize.height);*/
 }
 
 
@@ -142,8 +151,14 @@ void CCDragableItem::updateImagesVisibility()
 {
     if (m_bEnabled)
     {
-        if (m_pNormalImage)   m_pNormalImage->setVisible(true);
-        if (m_pMovedImage) m_pMovedImage->setVisible(true);
+        if (m_eState == kCCDragableItemStateTrackingTouch) { //moving
+            if (m_pNormalImage)   m_pNormalImage->setVisible(true);
+            if (m_pMovedImage) m_pMovedImage->setVisible(true);
+        }else { 
+            if (m_pNormalImage)   m_pNormalImage->setVisible(true);
+            if (m_pMovedImage) m_pMovedImage->setVisible(false);
+        }
+        
     }
 }
 
@@ -206,7 +221,7 @@ void CCDragableItem::ccTouchEnded(CCTouch *touch, CCEvent* event)
         
         if (m_pMovedImage) {
             m_pDelegate->onDragEnded(m_pMovedImage, this->convertToWorldSpace(m_pMovedImage->getPosition()));
-            setMovedImage(NULL);
+            //setMovedImage(NULL);
         }else{
             m_pDelegate->onDragEnded(this,this->convertToWorldSpace(this->getPosition()));
         }
@@ -238,6 +253,7 @@ void CCDragableItem::ccTouchMoved(CCTouch* touch, CCEvent* event)
         if (m_pDelegate != NULL)
             m_pDelegate->onDragging(this, this->convertToWorldSpace(this->getPosition()));
     }
+    this->updateImagesVisibility();
     this->getParent()->reorderChild(this, kCCDragableItemMovedItemZOrder);
 }
 

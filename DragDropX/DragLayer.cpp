@@ -57,6 +57,7 @@ bool DragDrop::init()
         CCSprite *sprite = CCSprite::create(imageName->getCString());
         float offsetFraction = ((float)(i+1))/(images->count()+1);
         CCDragableItem *item = CCDragableItem::create(sprite);
+        item->setMovedImage(this->movedNode());
         //item->setPosition(winSize.width*offsetFraction, winSize.height/2);
         item->setPosition(20,winSize.height*offsetFraction);
         item->setDelegate(this);
@@ -93,12 +94,12 @@ void DragDrop::onDragBegan(cocos2d::CCDragableItem *item)
 }
 void DragDrop::onDragging(cocos2d::CCNode *node, cocos2d::CCPoint point)
 {
-    CCLog("DragDrop::item  %p move To Position (%f,%f) ", node, point.x, point.y);
+    //CCLog("DragDrop::item  %p move To Position (%f,%f) ", node, point.x, point.y);
 }
 
 void DragDrop::onDragEnded(cocos2d::CCNode *node, cocos2d::CCPoint point)
 {
-    node->removeFromParentAndCleanup(true);
+    //node->removeFromParentAndCleanup(true);
     CCLog("DragDrop::item  %p DidDragedToPosition (%f,%f) ", node, point.x, point.y);
 }
 
