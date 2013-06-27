@@ -10,8 +10,9 @@
 
 #include "cocos2d.h"
 #include "SimpleAudioEngine.h"
-//#include "HelloWorldScene.h"
+#include "HelloWorldScene.h"
 #include "DragLayer.h"
+#include "ScrollLayer.h"
 
 USING_NS_CC;
 using namespace CocosDenshion;
@@ -38,7 +39,8 @@ bool AppDelegate::applicationDidFinishLaunching()
     pDirector->setAnimationInterval(1.0 / 60);
 
     // create a scene. it's an autorelease object
-    CCScene *pScene = DragDrop::scene();
+    //CCScene *pScene = DragDrop::scene();
+    CCScene *pScene = ScrollLayer::scene();
 
     // run
     pDirector->runWithScene(pScene);

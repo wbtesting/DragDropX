@@ -13,6 +13,7 @@
 		293CC5D3176EE8CB0079DDA9 /* cat.png in Resources */ = {isa = PBXBuildFile; fileRef = 293CC5CF176EE8CB0079DDA9 /* cat.png */; };
 		293CC5D4176EE8CB0079DDA9 /* dog.png in Resources */ = {isa = PBXBuildFile; fileRef = 293CC5D0176EE8CB0079DDA9 /* dog.png */; };
 		293CC5D5176EE8CB0079DDA9 /* turtle.png in Resources */ = {isa = PBXBuildFile; fileRef = 293CC5D1176EE8CB0079DDA9 /* turtle.png */; };
+		29AA1015177C2E26001B7DE5 /* ScrollLayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 29AA1013177C2E24001B7DE5 /* ScrollLayer.cpp */; };
 		29C8EE2F176EAB97005CCF4F /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29C8EE2E176EAB97005CCF4F /* QuartzCore.framework */; };
 		29C8EE31176EAB97005CCF4F /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29C8EE30176EAB97005CCF4F /* OpenGLES.framework */; };
 		29C8EE33176EAB97005CCF4F /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29C8EE32176EAB97005CCF4F /* OpenAL.framework */; };
@@ -283,6 +284,8 @@
 		293CC5CF176EE8CB0079DDA9 /* cat.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cat.png; sourceTree = "<group>"; };
 		293CC5D0176EE8CB0079DDA9 /* dog.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dog.png; sourceTree = "<group>"; };
 		293CC5D1176EE8CB0079DDA9 /* turtle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = turtle.png; sourceTree = "<group>"; };
+		29AA1013177C2E24001B7DE5 /* ScrollLayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ScrollLayer.cpp; sourceTree = "<group>"; };
+		29AA1014177C2E25001B7DE5 /* ScrollLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScrollLayer.h; sourceTree = "<group>"; };
 		29C8EE2B176EAB97005CCF4F /* DragDropX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DragDropX.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		29C8EE2E176EAB97005CCF4F /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		29C8EE30176EAB97005CCF4F /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -2002,6 +2005,8 @@
 				29C8F1A5176EAB9C005CCF4F /* HelloWorldScene.cpp */,
 				293CC5CC176EC2760079DDA9 /* DragLayer.h */,
 				293CC5CB176EC2760079DDA9 /* DragLayer.cpp */,
+				29AA1014177C2E25001B7DE5 /* ScrollLayer.h */,
+				29AA1013177C2E24001B7DE5 /* ScrollLayer.cpp */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -2321,6 +2326,7 @@
 				29C8F1A6176EAB9C005CCF4F /* HelloWorldScene.cpp in Sources */,
 				293CC5CD176EC2760079DDA9 /* DragLayer.cpp in Sources */,
 				2903C67B1772CFDD003DA35F /* CCDragableItem.cpp in Sources */,
+				29AA1015177C2E26001B7DE5 /* ScrollLayer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
