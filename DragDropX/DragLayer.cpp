@@ -64,11 +64,11 @@ bool DragDrop::init()
         layer->addChild(item);
         //movableItems->addObject(item);
         
-
+        
         icon = CCSprite::create("Icon.png");
         icon->setPosition(ccp(200, 80 + 160));
         layer->addChild(icon);
-
+        
     }
     
     //CCDragableLayer *layer = CCDragableLayer::createWithArray(movableItems);
@@ -77,11 +77,14 @@ bool DragDrop::init()
     
     return true;
 }
-
+#define NOT_HAS_MOVED_NODE 1
 //cocos2d::CCNode *DragDrop::movedNodeForItem(cocos2d::CCDragableItem *item)
 cocos2d::CCNode *DragDrop::movedNode()
 {
-    //return NULL;
+#if NOT_HAS_MOVED_NODE
+    
+    return NULL;
+#else
     CCSprite *sprite = CCSprite::create("cat.png");
     sprite->setAnchorPoint(ccp(0,0));
     sprite->runAction(CCRotateTo::create(0.1,0));
@@ -91,6 +94,7 @@ cocos2d::CCNode *DragDrop::movedNode()
     CCSequence *rotSeq = CCSequence::create(rotLeft,rotCenter,rotRight,rotCenter,NULL);
     sprite->runAction(CCRepeatForever::create(rotSeq));
     return sprite;
+#endif
 }
 
 
@@ -99,22 +103,31 @@ void DragDrop::onDragBegan(cocos2d::CCDragableItem *item)
     CCLog("DragDrop::item  %p Did Touched ", item);
     //item->setMovedImage(this->movedNode());
 }
-void DragDrop::onDragging(cocos2d::CCDragableItem *item, cocos2d::CCFloat *x, cocos2d::CCFloat *y)
+void DragDrop::onDragging(cocos2d::CCDragableItem *item, float x, float y)
 {
-    //CCLog("DragDrop::item  %p move To Position (%f,%f) ", node, point.x, point.y);
+    CCLog("DragDrop::item  %p move To Position (%f,%f) ", item,x,y);
 }
 
-void DragDrop::onDragEnded(cocos2d::CCDragableItem *item, cocos2d::CCFloat *x, cocos2d::CCFloat *y)
+void DragDrop::onDragEnded(cocos2d::CCDragableItem *item,  float x, float y)
 {
     //
-    //CCLog("DragDrop::item  %p DidDragedToPosition (%f,%f) ", node, point.x, point.y);
-    CCNode *node = item->getMovedImage();
-    CCRect rect = CCRectMake(x->getValue(),y->getValue(), node->getContentSize().width, node->getContentSize().height);
+    CCLog("DragDrop::item  %p DidDragedToPosition (%f,%f) ", item, x,y);
+    
+    CCNode *movedNode = item->getMovedImage();
+    if (!movedNode) {
+        movedNode = item;
+    }
+    CCRect rect = CCRectMake(x - movedNode->getAnchorPointInPoints().x,y - movedNode->getAnchorPointInPoints().y, movedNode->getContentSize().width, movedNode->getContentSize().height);
+    
     if (rect.intersectsRect(icon->boundingBox())){
         CCLog("keep ");
-
-        icon->addChild(this->movedNode());
+        
+#if NOT_HAS_MOVED_NODE
+        item->setPosition(icon->getPosition());
+#else
+        icon->addChild(this->movedNode());// add a new node
         item->setEnabled(false);
+#endif
     }
 }
 

@@ -13,9 +13,9 @@
 #include "CCProtocols.h"
 #include "cocoa/CCArray.h"
 #include "touch_dispatcher/CCTouchDelegateProtocol.h"
-#include "CCFloat.h"
 //#include "LuaUtil.h"
-#define ScriptType 0
+#define  ScriptType 0
+
 NS_CC_BEGIN
 
 /**
@@ -31,7 +31,7 @@ typedef enum  {
 } tCCDragableItemState;
 
 enum {
-	//* priority used by the menu for the event handler
+	//* priority used by the CCDragableItem for the event handler
     //* use the same value as CCMenu
 	kCCDragableItemHandlerPriority = -128,
 };
@@ -51,20 +51,14 @@ public:
 
     //virtual CCNode *movedNodeForItem(CCDragableItem *item) = 0;
     
+
     /**
-     *  NOTICE: onDragBegan() provide a CCDragableItem instead of CCNode,
-     *  because client need to provide moveImage if nessesary in onDragBegan
+     *  For the 3 api below:
+     *  all the position is in world space.
      */
     virtual void onDragBegan(CCDragableItem *item) = 0;
-    /**
-     *  For the 2 api below:
-     *  if client provided movedImage, node will be the movedImage
-     *  if not, node will be the CCDragableItem
-     *  all the position is in world space.
-
-     */
-    virtual void onDragging(CCDragableItem *item,CCFloat *x, CCFloat *y) = 0 ;
-    virtual void onDragEnded(CCDragableItem *item ,CCFloat *x, CCFloat *y) = 0;
+    virtual void onDragging(CCDragableItem *item, float x, float y) = 0 ;
+    virtual void onDragEnded(CCDragableItem *item ,float x, float y) = 0;
 };
 
 
@@ -92,8 +86,6 @@ public:
     static CCDragableItem * create(CCNode* normalSprite);
     bool initWithNormalSprite(CCNode* normalSprite);
     
-    /** Returns the outside box */
-    CCRect rect();
 
 
     virtual bool isEnabled();
@@ -117,7 +109,8 @@ protected:
     void setHandlerPriority(int newPriority);
     bool isTouchInside(CCTouch *touch);
     virtual void registerWithTouchDispatcher();
-    
+    /** Returns the outside box */
+    CCRect rect();
     /**
      @brief For phone event handle functions
      */
