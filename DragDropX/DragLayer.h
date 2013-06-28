@@ -25,6 +25,7 @@ public:
     // preprocessor macro for "static create()" constructor ( node() deprecated )
     CREATE_FUNC(DragDrop);
     //static DragDrop *create();
+    CCNode *movedNode(cocos2d::CCString *filename);
     CCNode *movedNode();
     //virtual ~CCDragableItemDelegate() {}
     //virtual cocos2d::CCNode *movedNodeForItem(cocos2d::CCDragableItem *item);

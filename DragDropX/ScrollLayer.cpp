@@ -39,6 +39,8 @@ bool ScrollLayer::init()
         return false;
     }
     
+    //////////////////////////////
+    // 2. add scrollview
     
     
     /////////////////////////////

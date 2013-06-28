@@ -39,8 +39,8 @@ bool AppDelegate::applicationDidFinishLaunching()
     pDirector->setAnimationInterval(1.0 / 60);
 
     // create a scene. it's an autorelease object
-    //CCScene *pScene = DragDrop::scene();
-    CCScene *pScene = ScrollLayer::scene();
+    CCScene *pScene = DragDrop::scene();
+    //CCScene *pScene = ScrollLayer::scene();
 
     // run
     pDirector->runWithScene(pScene);

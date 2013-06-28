@@ -56,8 +56,9 @@ bool DragDrop::init()
         CCString *imageName = (CCString *)images->objectAtIndex(i);
         CCSprite *sprite = CCSprite::create(imageName->getCString());
         float offsetFraction = ((float)(i+1))/(images->count()+1);
-        CCDragableItem *item = CCDragableItem::create(sprite);
-        item->setMovedImage(this->movedNode());
+        //CCDragableItem *item = CCDragableItem::create(sprite);
+        CCDragableItem *item = CCDragableItem::create(this->movedNode(imageName));
+        item->setMovedImage(this->movedNode(imageName));
         //item->setPosition(winSize.width*offsetFraction, winSize.height/2);
         item->setPosition(ccp(20,winSize.height*offsetFraction));
         item->setDelegate(this);
@@ -77,8 +78,26 @@ bool DragDrop::init()
     
     return true;
 }
-#define NOT_HAS_MOVED_NODE 1
+#define NOT_HAS_MOVED_NODE 0
 //cocos2d::CCNode *DragDrop::movedNodeForItem(cocos2d::CCDragableItem *item)
+cocos2d::CCNode *DragDrop::movedNode(cocos2d::CCString *imageName)
+{
+#if NOT_HAS_MOVED_NODE
+    
+    return NULL;
+#else
+    CCSprite *sprite = CCSprite::create(imageName->getCString());
+    sprite->setAnchorPoint(ccp(0,0));
+    sprite->runAction(CCRotateTo::create(0.1,0));
+    CCRotateBy *rotLeft = CCRotateBy::create(0.1, -4.0);
+    CCRotateBy *rotCenter = CCRotateBy::create(0.1, 0.0);
+    CCRotateBy *rotRight = CCRotateBy::create(0.1, 4.0);
+    CCSequence *rotSeq = CCSequence::create(rotLeft,rotCenter,rotRight,rotCenter,NULL);
+    sprite->runAction(CCRepeatForever::create(rotSeq));
+    return sprite;
+#endif
+}
+
 cocos2d::CCNode *DragDrop::movedNode()
 {
 #if NOT_HAS_MOVED_NODE
